@@ -55,8 +55,8 @@ class MetaLoader
         $this->stateFile = $stateFile;
 
         // Read file containing $state from disk
-        if (is_readable($stateFile)) {
-            include $stateFile;
+        if (!is_null($stateFile) && is_readable($stateFile)) {
+            include($stateFile);
         }
     }
 
@@ -94,7 +94,7 @@ class MetaLoader
      * @param $source array
      * @return void
      */
-    public function loadSource($source)
+    public function loadSource(array $source)
     {
         if (preg_match('@^https?://@i', $source['src'])) {
             // Build new HTTP context
@@ -225,7 +225,7 @@ class MetaLoader
      * @param array $source
      * @return array
      */
-    private function createContext($source)
+    private function createContext(array $source)
     {
         $config = Configuration::getInstance();
         $name = $config->getString('technicalcontact_name', null);
@@ -255,7 +255,7 @@ class MetaLoader
      * @param array $source
      * @return void
      */
-    private function addCachedMetadata($source)
+    private function addCachedMetadata(array $source)
     {
         if (isset($this->oldMetadataSrc)) {
             foreach ($this->types as $type) {
@@ -278,7 +278,7 @@ class MetaLoader
      * @param array $responseHeaders
      * @return void
      */
-    private function saveState($source, $responseHeaders)
+    private function saveState(array $source, array $responseHeaders)
     {
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             // Headers section
@@ -309,7 +309,7 @@ class MetaLoader
      * @return \SimpleSAML\Metadata\SAMLParser[]
      * @throws \Exception
      */
-    private function loadXML($data, $source)
+    private function loadXML($data, array $source)
     {
         try {
             $doc = \SAML2\DOMDocumentFactory::fromString($data);
@@ -379,7 +379,7 @@ class MetaLoader
      * @param array|null $template The template.
      * @return void
      */
-    private function addMetadata($filename, $metadata, $type, $template = null)
+    private function addMetadata($filename, array $metadata, $type, array $template = null)
     {
         if ($metadata === null) {
             return;
@@ -418,7 +418,7 @@ class MetaLoader
      * @param \SimpleSAML\Configuration $config
      * @return void
      */
-    public function writeARPfile($config)
+    public function writeARPfile(Configuration $config)
     {
         Assert::isInstanceOf($config, Configuration::class);
 
