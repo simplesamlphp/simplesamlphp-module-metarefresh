@@ -420,7 +420,7 @@ class MetaLoader
      */
     public function writeARPfile($config)
     {
-        Assert::instanceOf($config, Configuration::class);
+        Assert::isInstanceOf($config, Configuration::class);
 
         $arpfile = $config->getValue('arpfile');
         $types = ['saml20-sp-remote'];
