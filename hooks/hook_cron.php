@@ -22,7 +22,9 @@ function metarefresh_hook_cron(&$croninfo)
         $mconfig = \SimpleSAML\Configuration::getOptionalConfig('config-metarefresh.php');
 
         $sets = $mconfig->getConfigList('sets', []);
-        $stateFile = $config->getPathValue('datadir', 'data/').'metarefresh-state.php';
+        /** @var string $datadir */
+        $datadir = $config->getPathValue('datadir', 'data/');
+        $stateFile = $datadir.'metarefresh-state.php';
 
         foreach ($sets as $setkey => $set) {
             // Only process sets where cron matches the current cron tag
@@ -42,6 +44,10 @@ function metarefresh_hook_cron(&$croninfo)
 
             $outputDir = $set->getString('outputDir');
             $outputDir = $config->resolvePath($outputDir);
+            if ($outputDir === null) {
+                throw \Exception("Invalid outputDir specified.");
+            }
+
             $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize'], 'flatfile');
 
             $oldMetadataSrc = \SimpleSAML\Metadata\MetaDataStorageSource::getSource([
