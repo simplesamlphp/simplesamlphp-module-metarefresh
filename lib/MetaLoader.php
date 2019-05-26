@@ -374,12 +374,12 @@ class MetaLoader
      * This function will return without making any changes if $metadata is NULL.
      *
      * @param string $filename The filename the metadata comes from.
-     * @param array $metadata The metadata.
+     * @param array|null $metadata The metadata.
      * @param string $type The metadata type.
      * @param array|null $template The template.
      * @return void
      */
-    private function addMetadata($filename, array $metadata, $type, array $template = null)
+    private function addMetadata($filename, $metadata, $type, array $template = null)
     {
         if ($metadata === null) {
             return;
