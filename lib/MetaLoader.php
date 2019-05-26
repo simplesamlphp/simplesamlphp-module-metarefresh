@@ -275,10 +275,10 @@ class MetaLoader
      * Store caching state data for a source
      *
      * @param array $source
-     * @param array $responseHeaders
+     * @param array|null $responseHeaders
      * @return void
      */
-    private function saveState(array $source, array $responseHeaders)
+    private function saveState(array $source, $responseHeaders)
     {
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             // Headers section
