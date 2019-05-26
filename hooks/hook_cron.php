@@ -45,7 +45,7 @@ function metarefresh_hook_cron(&$croninfo)
             $outputDir = $set->getString('outputDir');
             $outputDir = $config->resolvePath($outputDir);
             if ($outputDir === null) {
-                throw \Exception("Invalid outputDir specified.");
+                throw new \Exception("Invalid outputDir specified.");
             }
 
             $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize'], 'flatfile');
