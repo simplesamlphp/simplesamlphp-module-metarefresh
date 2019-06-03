@@ -5,7 +5,6 @@ namespace SimpleSAML\Module\metarefresh;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
-use Webmozart\Assert\Assert;
 
 /**
  * @package SimpleSAMLphp
@@ -420,7 +419,7 @@ class MetaLoader
      */
     public function writeARPfile(Configuration $config)
     {
-        Assert::isInstanceOf($config, Configuration::class);
+        assert($config instanceOf \SimpleSAML\Configuration);
 
         $arpfile = $config->getValue('arpfile');
         $types = ['saml20-sp-remote'];
@@ -507,7 +506,7 @@ class MetaLoader
      */
     public function writeMetadataSerialize($outputDir)
     {
-        Assert::string($outputDir);
+        assert(is_string($outputDir));
 
         $metaHandler = new \SimpleSAML\Metadata\MetaDataStorageHandlerSerialize(['directory' => $outputDir]);
 

@@ -1,7 +1,6 @@
 <?php
 
 use SimpleSAML\Logger;
-use Webmozart\Assert\Assert;
 
 /**
  * Hook to run a cron job.
@@ -11,9 +10,9 @@ use Webmozart\Assert\Assert;
  */
 function metarefresh_hook_cron(&$croninfo)
 {
-    Assert::isArray($croninfo);
-    Assert::keyExists($croninfo, 'summary');
-    Assert::keyExists($croninfo, 'tag');
+    assert(is_array($croninfo));
+    assert(array_key_exists('summary', $croninfo));
+    assert(array_key_exists('tag', $croninfo));
 
     Logger::info('cron [metarefresh]: Running cron in cron tag ['.$croninfo['tag'].'] ');
 
