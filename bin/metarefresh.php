@@ -7,7 +7,6 @@
  */
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 
-
 // This is the base directory of the SimpleSAMLphp installation
 $baseDir = dirname(dirname(dirname(dirname(__FILE__))));
 
@@ -27,7 +26,6 @@ $configdir = \SimpleSAML\Utils\Config::getConfigDir();
 
 // $outputDir contains the directory we will store the generated metadata in
 $outputDir = $baseDir.'/metadata-generated';
-
 
 /* $toStdOut is a boolean telling us wheter we will print the output to stdout instead
  * of writing it to files in $outputDir.
@@ -190,6 +188,6 @@ function printHelp()
     echo '                              Path will be relative to the SimpleSAMLphp'."\n";
     echo '                              base directory.'."\n";
     echo ' -s, --stdout                 Write the output to stdout instead of'."\n";
-    echo '                              seperate files in the output directory.'."\n";
+    echo '                              separate files in the output directory.'."\n";
     echo "\n";
 }
