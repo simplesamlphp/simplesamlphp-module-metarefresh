@@ -24,7 +24,7 @@ class TemplateTest extends TestCase
         ]);
         Configuration::setPreLoadedConfig($config);
 
-        $basedir = dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'templates';
+        $basedir = dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))).DIRECTORY_SEPARATOR.'templates';
 
         // Base templates
         $files = array_diff(scandir($basedir), ['.', '..']);
