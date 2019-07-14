@@ -9,8 +9,8 @@
 namespace SimpleSAML\Test\Web;
 
 use PHPUnit\Framework\TestCase;
-use SimpleSAML\Configuration as Configuration;
-use SimpleSAML\XHTML\Template as Template;
+use SimpleSAML\Configuration;
+use SimpleSAML\XHTML\Template;
 use SimpleSAML\Module;
 use Twig\Error\SyntaxError;
 
@@ -30,7 +30,7 @@ class TemplateTest extends TestCase
         $files = array_diff(scandir($basedir), ['.', '..']);
         foreach ($files as $file) {
             if (preg_match('/.twig$/', $file)) {
-                $t = new Template($config, 'monitor:'.basename($file));
+                $t = new Template($config, 'metarefresh:'.basename($file));
                 ob_start();
                 try {
                     $t->show();
