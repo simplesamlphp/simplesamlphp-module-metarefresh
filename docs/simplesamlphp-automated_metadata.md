@@ -174,6 +174,15 @@ Each metadata source has the following options:
 :	Same as the option with the same name at the metadata set level. This option has precedence when both are specified,
 	allowing a more fine grained configuration for every metadata source.
 
+`whitelist`
+:   This is an array that allows for selectively refreshing a list of identity providers. Only data from identity
+    providers that exist in the whitelist will be processed and written to disk. This is especially useful for hosting
+    environments that have strict limits memory and maximum execution time.
+
+`blacklist`
+:   This is an array that allows for selectively skipping a list of identity providers.  Only data from identity
+    providers that do not appear in the blacklist are processed and written to disk.
+
 
 After you have configured the metadata sources, you need to give the
 web-server write access to the output directories. Following the previous example:
