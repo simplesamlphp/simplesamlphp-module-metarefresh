@@ -45,7 +45,7 @@ class MetaLoaderTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->config = Configuration::loadFromArray(['module.enable' => ['metarefresh' => true]], '[ARRAY]', 'simplesaml');
         Configuration::setPreLoadedConfig($this->config, 'config.php');
@@ -54,7 +54,7 @@ class MetaLoaderTest extends TestCase
         $this->source['src'] = dirname(dirname(__FILE__)) . '/testmetadata.xml';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->tmpdir && is_dir($this->tmpdir)) {
             foreach (array_diff(scandir($this->tmpdir), array('.','..')) as $file) {
@@ -64,7 +64,7 @@ class MetaLoaderTest extends TestCase
         }
     }
 
-    public function testMetaLoader()
+    public function testMetaLoader(): void
     {
         $this->metaloader->loadSource($this->source);
         $this->metaloader->dumpMetadataStdOut();
@@ -84,7 +84,7 @@ class MetaLoaderTest extends TestCase
         );
     }
 
-    public function testSignatureVerificationFingerprintDefaultsToSHA1()
+    public function testSignatureVerificationFingerprintDefaultsToSHA1(): void
     {
         $this->metaloader->loadSource(
             array_merge(
@@ -98,7 +98,7 @@ class MetaLoaderTest extends TestCase
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
     }
 
-    public function testSignatureVerificationFingerprintSHA256()
+    public function testSignatureVerificationFingerprintSHA256(): void
     {
         $this->metaloader->loadSource(
             array_merge(
@@ -113,21 +113,21 @@ class MetaLoaderTest extends TestCase
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
     }
 
-    public function testSignatureVerificationFingerprintFailure()
+    public function testSignatureVerificationFingerprintFailure(): void
     {
         $this->metaloader->loadSource(array_merge($this->source, [ 'validateFingerprint' => 'DE:AD:BE:EF:DE:AD:BE:EF:DE:AD:BE:EF:DE:AD:BE:EF:DE:AD:BE:EF' ]));
         $this->metaloader->dumpMetadataStdOut();
         $this->expectOutputString('');
     }
 
-    public function testSignatureVerificationCertificatePass()
+    public function testSignatureVerificationCertificatePass(): void
     {
         $this->metaloader->loadSource(array_merge($this->source, [ 'certificates' => [ dirname(dirname(__FILE__)) . '/mdx.pem' ] ]));
         $this->metaloader->dumpMetadataStdOut();
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
     }
 
-    public function testWriteMetadataFiles()
+    public function testWriteMetadataFiles(): void
     {
         $this->tmpdir = tempnam(sys_get_temp_dir(), 'SSP:tests:metarefresh:');
         @unlink($this->tmpdir); /* work around post 4.0.3 behaviour */
