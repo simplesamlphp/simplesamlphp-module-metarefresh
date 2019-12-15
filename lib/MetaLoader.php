@@ -57,6 +57,10 @@ class MetaLoader
         if (!is_null($stateFile) && is_readable($stateFile)) {
             include($stateFile);
         }
+
+        if (isset($state)) {
+            $this->state = $state;
+        }
     }
 
 
