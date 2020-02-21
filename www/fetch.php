@@ -7,10 +7,12 @@ $mconfig = \SimpleSAML\Configuration::getOptionalConfig('config-metarefresh.php'
 
 \SimpleSAML\Logger::setCaptureLog(true);
 
-$sets = $mconfig->getConfigList('sets', []);
+$sets = $mconfig->getArray('sets', []);
 
 foreach ($sets as $setkey => $set) {
-    \SimpleSAML\Logger::info('[metarefresh]: Executing set ['.$setkey.']');
+    $set = \SimpleSAML\Configuration::loadFromArray($set);
+
+    \SimpleSAML\Logger::info('[metarefresh]: Executing set [' . $setkey . ']');
 
     try {
         $expireAfter = $set->getInteger('expireAfter', null);
@@ -29,8 +31,6 @@ foreach ($sets as $setkey => $set) {
         $available_types = [
             'saml20-idp-remote',
             'saml20-sp-remote',
-            'shib13-idp-remote',
-            'shib13-sp-remote',
             'attributeauthority-remote'
         ];
         $set_types = $set->getArrayize('types', $available_types);
@@ -57,12 +57,14 @@ foreach ($sets as $setkey => $set) {
                 $source['whitelist'] = $whitelist;
             }
 
-            \SimpleSAML\Logger::debug('[metarefresh]: In set ['.$setkey.'] loading source ['.$source['src'].']');
+            \SimpleSAML\Logger::debug(
+                '[metarefresh]: In set [' . $setkey . '] loading source [' . $source['src'] . ']'
+            );
             $metaloader->loadSource($source);
         }
 
         $outputDir = $set->getString('outputDir');
-        $outputDir = $config->resolvePath($outputDir);
+        $outputDir = \SimpleSAML\Utils\System::resolvePath($outputDir);
 
         $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize'], 'flatfile');
         switch ($outputFormat) {
@@ -81,6 +83,6 @@ foreach ($sets as $setkey => $set) {
 
 $logentries = \SimpleSAML\Logger::getCapturedLog();
 
-$t = new \SimpleSAML\XHTML\Template($config, 'metarefresh:fetch.tpl.php');
+$t = new \SimpleSAML\XHTML\Template($config, 'metarefresh:fetch.twig');
 $t->data['logentries'] = $logentries;
-$t->show();
+$t->send();

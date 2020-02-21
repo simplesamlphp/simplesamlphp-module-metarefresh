@@ -4,7 +4,7 @@ namespace SimpleSAML\Test\Module\metarefresh;
 
 use PHPUnit\Framework\TestCase;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
-use \SimpleSAML\Configuration;
+use SimpleSAML\Configuration;
 
 class MetaLoaderTest extends TestCase
 {
@@ -23,7 +23,7 @@ class MetaLoaderTest extends TestCase
         'OrganizationDisplayName' => ['en' => 'OrganizationDisplayName',],
         'url' => ['en' => 'https://example.com',],
         'OrganizationURL' => ['en' => 'https://example.com',],
-        'contacts' => [['contactType' => 'technical', 'emailAddress' => ['mailto:technical.contact@example.com',],],],
+        'contacts' => [['contactType' => 'technical', 'emailAddress' => ['technical.contact@example.com',],],],
         'metadata-set' => 'saml20-idp-remote',
         'SingleSignOnService' => [
             [
@@ -47,7 +47,11 @@ class MetaLoaderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config = Configuration::loadFromArray(['module.enable' => ['metarefresh' => true]], '[ARRAY]', 'simplesaml');
+        $this->config = Configuration::loadFromArray(
+            ['module.enable' => ['metarefresh' => true]],
+            '[ARRAY]',
+            'simplesaml'
+        );
         Configuration::setPreLoadedConfig($this->config, 'config.php');
         $this->metaloader = new \SimpleSAML\Module\metarefresh\MetaLoader();
         /* cannot use dirname() in declaration */
@@ -58,7 +62,7 @@ class MetaLoaderTest extends TestCase
     {
         if ($this->tmpdir && is_dir($this->tmpdir)) {
             foreach (array_diff(scandir($this->tmpdir), array('.','..')) as $file) {
-                unlink($this->tmpdir.'/'.$file);
+                unlink($this->tmpdir . '/' . $file);
             }
             rmdir($this->tmpdir);
         }
@@ -84,45 +88,11 @@ class MetaLoaderTest extends TestCase
         );
     }
 
-    public function testSignatureVerificationFingerprintDefaultsToSHA1(): void
-    {
-        $this->metaloader->loadSource(
-            array_merge(
-                $this->source,
-                [
-                    'validateFingerprint' => '85:11:00:FF:34:55:BC:20:C0:20:5D:46:9B:2F:23:8F:41:09:68:F2',
-                ]
-            )
-        );
-        $this->metaloader->dumpMetadataStdOut();
-        $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
-    }
-
-    public function testSignatureVerificationFingerprintSHA256(): void
-    {
-        $this->metaloader->loadSource(
-            array_merge(
-                $this->source,
-                [
-                    'validateFingerprint' => '36:64:49:4E:F4:4C:59:9F:5B:8F:FE:75:7E:B2:0C:1A:3A:27:AD:AF:11:B0:6D:EC:DF:38:B6:66:C8:C4:C6:84',
-                    'validateFingerprintAlgorithm' => XMLSecurityDSig::SHA256,
-                ]
-            )
-        );
-        $this->metaloader->dumpMetadataStdOut();
-        $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
-    }
-
-    public function testSignatureVerificationFingerprintFailure(): void
-    {
-        $this->metaloader->loadSource(array_merge($this->source, [ 'validateFingerprint' => 'DE:AD:BE:EF:DE:AD:BE:EF:DE:AD:BE:EF:DE:AD:BE:EF:DE:AD:BE:EF' ]));
-        $this->metaloader->dumpMetadataStdOut();
-        $this->expectOutputString('');
-    }
-
     public function testSignatureVerificationCertificatePass(): void
     {
-        $this->metaloader->loadSource(array_merge($this->source, [ 'certificates' => [ dirname(dirname(__FILE__)) . '/mdx.pem' ] ]));
+        $this->metaloader->loadSource(
+            array_merge($this->source, ['certificates' => [dirname(dirname(__FILE__)) . '/mdx.pem']])
+        );
         $this->metaloader->dumpMetadataStdOut();
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
     }

@@ -56,8 +56,6 @@ $config = [
                      * The sets of entities to load, any combination of:
                      *  - 'saml20-idp-remote'
                      *  - 'saml20-sp-remote'
-                     *  - 'shib13-idp-remote'
-                     *  - 'shib13-sp-remote'
                      *  - 'attributeauthority-remote'
                      *
                      * All of them will be used by default.
@@ -81,8 +79,6 @@ $config = [
              * The sets of entities to load, any combination of:
              *  - 'saml20-idp-remote'
              *  - 'saml20-sp-remote'
-             *  - 'shib13-idp-remote'
-             *  - 'shib13-sp-remote'
              *  - 'attributeauthority-remote'
              *
              * All of them will be used by default.

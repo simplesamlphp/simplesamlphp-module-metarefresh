@@ -32,11 +32,13 @@
         <PossiblyUnusedMethod errorLevel="info" />
 
 
-        <!-- Ignore InvalidScope+UndefinedGlobalVariable on template-scripts - Remove for 2.0 -->
-        <InvalidScope>
+        <!-- Ignore UnresolvableInclude -->
+        <UnresolvableInclude>
             <errorLevel type="suppress">
-                <file name="templates/*.tpl.php" />
+                <file name="lib/ARP.php" />
+                <file name="lib/MetaLoader.php" />
+                <file name="tests/bootstrap.php" />
             </errorLevel>
-        </InvalidScope>
+        </UnresolvableInclude>
     </issueHandlers>
 </psalm>

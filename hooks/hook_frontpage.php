@@ -8,9 +8,8 @@ use Webmozart\Assert\Assert;
  * @param array &$links  The links on the frontpage, split into sections.
  * @return void
  */
-function metarefresh_hook_frontpage(&$links)
+function metarefresh_hook_frontpage(array &$links)
 {
-    Assert::isArray($links);
     Assert::keyExists($links, 'links');
 
     $links['federation'][] = [

@@ -1,5 +1,6 @@
 <?php
 
+use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use Webmozart\Assert\Assert;
 
@@ -9,31 +10,32 @@ use Webmozart\Assert\Assert;
  * @param array &$croninfo  Output
  * @return void
  */
-function metarefresh_hook_cron(&$croninfo)
+function metarefresh_hook_cron(array &$croninfo): void
 {
-    Assert::isArray($croninfo);
     Assert::keyExists($croninfo, 'summary');
     Assert::keyExists($croninfo, 'tag');
 
-    Logger::info('cron [metarefresh]: Running cron in cron tag ['.$croninfo['tag'].'] ');
+    Logger::info('cron [metarefresh]: Running cron in cron tag [' . $croninfo['tag'] . '] ');
 
     try {
-        $config = \SimpleSAML\Configuration::getInstance();
-        $mconfig = \SimpleSAML\Configuration::getOptionalConfig('config-metarefresh.php');
+        $config = Configuration::getInstance();
+        $mconfig = Configuration::getOptionalConfig('config-metarefresh.php');
 
-        $sets = $mconfig->getConfigList('sets', []);
+        $sets = $mconfig->getArray('sets', []);
         /** @var string $datadir */
         $datadir = $config->getPathValue('datadir', 'data/');
-        $stateFile = $datadir.'metarefresh-state.php';
+        $stateFile = $datadir . 'metarefresh-state.php';
 
         foreach ($sets as $setkey => $set) {
+            $set = Configuration::loadFromArray($set);
+
             // Only process sets where cron matches the current cron tag
             $cronTags = $set->getArray('cron');
             if (!in_array($croninfo['tag'], $cronTags, true)) {
                 continue;
             }
 
-            Logger::info('cron [metarefresh]: Executing set ['.$setkey.']');
+            Logger::info('cron [metarefresh]: Executing set [' . $setkey . ']');
 
             $expireAfter = $set->getInteger('expireAfter', null);
             if ($expireAfter !== null) {
@@ -66,8 +68,6 @@ function metarefresh_hook_cron(&$croninfo)
             $available_types = [
                 'saml20-idp-remote',
                 'saml20-sp-remote',
-                'shib13-idp-remote',
-                'shib13-sp-remote',
                 'attributeauthority-remote'
             ];
             $set_types = $set->getArrayize('types', $available_types);
@@ -99,7 +99,7 @@ function metarefresh_hook_cron(&$croninfo)
                     $source['conditionalGET'] = $conditionalGET;
                 }
 
-                Logger::debug('cron [metarefresh]: In set ['.$setkey.'] loading source ['.$source['src'].']');
+                Logger::debug('cron [metarefresh]: In set [' . $setkey . '] loading source [' . $source['src'] . ']');
                 $metaloader->loadSource($source);
             }
 
@@ -116,11 +116,11 @@ function metarefresh_hook_cron(&$croninfo)
             }
 
             if ($set->hasValue('arp')) {
-                $arpconfig = \SimpleSAML\Configuration::loadFromArray($set->getValue('arp'));
+                $arpconfig = Configuration::loadFromArray($set->getValue('arp'));
                 $metaloader->writeARPfile($arpconfig);
             }
         }
     } catch (\Exception $e) {
-        $croninfo['summary'][] = 'Error during metarefresh: '.$e->getMessage();
+        $croninfo['summary'][] = 'Error during metarefresh: ' . $e->getMessage();
     }
 }

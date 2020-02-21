@@ -96,7 +96,6 @@ Here's an example of a possible configuration for both the Kalmar Federation and
 				'sources'	=> [
 					[
 						'src' => 'http://metadata.ukfederation.org.uk/ukfederation-metadata.xml',
-						'validateFingerprint' => 'D0:E8:40:25:F0:B1:2A:CC:74:22:ED:C3:87:04:BC:29:BB:7B:9A:40',
 					],
 				],
 				'expireAfter' 		=> 60*60*24*4, // Maximum 4 days cache time.
@@ -138,8 +137,6 @@ The metarefresh module supports the following configuration options:
 
 	* saml20-idp-remote
 	* saml20-sp-remote
-	* shib13-idp-remote
-	* shib13-sp-remote
 	* attributeauthority-remote
 
 	All entity types will be loaded by default.
@@ -154,17 +151,7 @@ Each metadata source has the following options:
     that will be used to verify the signature of the metadata. The public key will
     be extracted from the certificate and everything else will be ignored. So it is
     possible to use a self signed certificate that has expired. Add more than one
-    certificate to be able to handle key rollover. This takes precedence over
-    validateFingerprint.
-
-`validateFingerprint`
-:   The fingerprint of the certificate used to sign the metadata. You
-    don't need this option if you don't want to validate the signature
-    on the metadata.
-
-`validateFingerprintAlgorithm`
-:   Algorithm used to compute the signing certificate's fingerprint. Defaults to
-    `XMLSecurityDSig::SHA1`.
+    certificate to be able to handle key rollover.
 
 `template`
 :   This is an array which will be combined with the metadata fetched to

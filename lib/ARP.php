@@ -28,6 +28,7 @@ class ARP
      */
     private $suffix;
 
+
     /**
      * Constructor
      *
@@ -36,7 +37,7 @@ class ARP
      * @param string $prefix
      * @param string $suffix
      */
-    public function __construct(array $metadata, $attributemap_filename, $prefix, $suffix)
+    public function __construct(array $metadata, string $attributemap_filename, string $prefix, string $suffix)
     {
         $this->metadata = $metadata;
         $this->prefix = $prefix;
@@ -47,25 +48,27 @@ class ARP
         }
     }
 
+
     /**
      * @param string $attributemap_filename
      *
      * @return void
      */
-    private function loadAttributeMap($attributemap_filename)
+    private function loadAttributeMap(string $attributemap_filename): void
     {
         $config = \SimpleSAML\Configuration::getInstance();
-        include($config->getPathValue('attributemap', 'attributemap/').$attributemap_filename.'.php');
+        include($config->getPathValue('attributemap', 'attributemap/') . $attributemap_filename . '.php');
         // Note that $attributemap is defined in the included attributemap-file!
         $this->attributes = $attributemap;
     }
+
 
     /**
      * @param string $name
      *
      * @return string
      */
-    private function surround($name)
+    private function surround(string $name): string
     {
         $ret = '';
         if (!empty($this->prefix)) {
@@ -78,12 +81,13 @@ class ARP
         return $ret;
     }
 
+
     /**
      * @param string $name
      *
      * @return string
      */
-    private function getAttributeID($name)
+    private function getAttributeID(string $name): string
     {
         if (empty($this->attributes)) {
             return $this->surround($name);
@@ -94,10 +98,11 @@ class ARP
         return $this->surround($name);
     }
 
+
     /**
      * @return string
      */
-    public function getXML()
+    public function getXML(): string
     {
         $xml = <<<MSG
         <?xml version="1.0" encoding="UTF-8"?>
@@ -117,25 +122,27 @@ MSG;
         return $xml;
     }
 
-    /**
-     * @param array $entry
-     *
-     * @return string
-     */
-    private function getEntryXML($entry)
-    {
-        $entityid = $entry['entityid'];
-        return '    <AttributeFilterPolicy id="'.$entityid.
-            '"><PolicyRequirementRule xsi:type="basic:AttributeRequesterString" value="'.$entityid.
-            '" />'.$this->getEntryXMLcontent($entry).'</AttributeFilterPolicy>';
-    }
 
     /**
      * @param array $entry
      *
      * @return string
      */
-    private function getEntryXMLcontent(array $entry)
+    private function getEntryXML(array $entry): string
+    {
+        $entityid = $entry['entityid'];
+        return '    <AttributeFilterPolicy id="' . $entityid .
+            '"><PolicyRequirementRule xsi:type="basic:AttributeRequesterString" value="' . $entityid .
+            '" />' . $this->getEntryXMLcontent($entry) . '</AttributeFilterPolicy>';
+    }
+
+
+    /**
+     * @param array $entry
+     *
+     * @return string
+     */
+    private function getEntryXMLcontent(array $entry): string
     {
         if (!array_key_exists('attributes', $entry)) {
             return '';
@@ -143,7 +150,7 @@ MSG;
 
         $ret = '';
         foreach ($entry['attributes'] as $a) {
-            $ret .= '            <AttributeRule attributeID="'.$this->getAttributeID($a).
+            $ret .= '            <AttributeRule attributeID="' . $this->getAttributeID($a) .
                 '"><PermitValueRule xsi:type="basic:ANY" /></AttributeRule>';
         }
         return $ret;

@@ -23,7 +23,7 @@ class MetaLoader
     private $oldMetadataSrc;
 
     /** @var string|null */
-    private $stateFile;
+    private $stateFile = null;
 
     /** @var bool*/
     private $changed = false;
@@ -35,8 +35,6 @@ class MetaLoader
     private $types = [
         'saml20-idp-remote',
         'saml20-sp-remote',
-        'shib13-idp-remote',
-        'shib13-sp-remote',
         'attributeauthority-remote'
     ];
 
@@ -48,18 +46,20 @@ class MetaLoader
      * @param string|null  $stateFile
      * @param object|null  $oldMetadataSrc
      */
-    public function __construct($expire = null, $stateFile = null, $oldMetadataSrc = null)
+    public function __construct(int $expire = null, string $stateFile = null, object $oldMetadataSrc = null)
     {
         $this->expire = $expire;
         $this->oldMetadataSrc = $oldMetadataSrc;
         $this->stateFile = $stateFile;
 
         // Read file containing $state from disk
+        /** @psalm-var array|null */
+        $state = null;
         if (!is_null($stateFile) && is_readable($stateFile)) {
             include($stateFile);
         }
 
-        if (isset($state)) {
+        if (!empty($state)) {
             $this->state = $state;
         }
     }
@@ -70,7 +70,7 @@ class MetaLoader
      *
      * @return array The entity types allowed.
      */
-    public function getTypes()
+    public function getTypes(): array
     {
         return $this->types;
     }
@@ -83,7 +83,7 @@ class MetaLoader
      * types. Pass an empty array to reset to all types of entities.
      * @return void
      */
-    public function setTypes($types)
+    public function setTypes($types): void
     {
         if (!is_array($types)) {
             $types = [$types];
@@ -98,7 +98,7 @@ class MetaLoader
      * @param $source array
      * @return void
      */
-    public function loadSource(array $source)
+    public function loadSource(array $source): void
     {
         if (preg_match('@^https?://@i', $source['src'])) {
             // Build new HTTP context
@@ -108,13 +108,13 @@ class MetaLoader
             try {
                 list($data, $responseHeaders) = \SimpleSAML\Utils\HTTP::fetch($source['src'], $context, true);
             } catch (\Exception $e) {
-                Logger::warning('metarefresh: '.$e->getMessage());
+                Logger::warning('metarefresh: ' . $e->getMessage());
             }
 
             // We have response headers, so the request succeeded
             if (!isset($responseHeaders)) {
                 // No response headers, this means the request failed in some way, so re-use old data
-                Logger::debug('No response from '.$source['src'].' - attempting to re-use cached metadata');
+                Logger::debug('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
             } elseif (preg_match('@^HTTP/1\.[01]\s304\s@', $responseHeaders[0])) {
@@ -124,7 +124,7 @@ class MetaLoader
                 return;
             } elseif (!preg_match('@^HTTP/1\.[01]\s200\s@', $responseHeaders[0])) {
                 // Other error
-                Logger::debug('Error from '.$source['src'].' - attempting to re-use cached metadata');
+                Logger::debug('Error from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
             }
@@ -143,8 +143,8 @@ class MetaLoader
         try {
             $entities = $this->loadXML($data, $source);
         } catch (\Exception $e) {
-            Logger::debug('XML parser error when parsing '.$source['src'].' - attempting to re-use cached metadata');
-            Logger::debug('XML parser returned: '.$e->getMessage());
+            Logger::debug('XML parser error when parsing ' . $source['src'] . ' - attempting to re-use cached metadata');
+            Logger::debug('XML parser returned: ' . $e->getMessage());
             $this->addCachedMetadata($source);
             return;
         }
@@ -152,40 +152,24 @@ class MetaLoader
         foreach ($entities as $entity) {
             if (isset($source['blacklist'])) {
                 if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
-                    Logger::info('Skipping "'.$entity->getEntityId().'" - blacklisted.'."\n");
+                    Logger::info('Skipping "' . $entity->getEntityId() . '" - blacklisted.' . "\n");
                     continue;
                 }
             }
 
             if (isset($source['whitelist'])) {
                 if (!empty($source['whitelist']) && !in_array($entity->getEntityId(), $source['whitelist'], true)) {
-                    Logger::info('Skipping "'.$entity->getEntityId().'" - not in the whitelist.'."\n");
+                    Logger::info('Skipping "' . $entity->getEntityId() . '" - not in the whitelist.' . "\n");
                     continue;
                 }
             }
 
-            if (array_key_exists('certificates', $source) && $source['certificates'] !== null) {
+            if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
                 if (!$entity->validateSignature($source['certificates'])) {
                     Logger::info(
-                        'Skipping "'.$entity->getEntityId().'" - could not verify signature using certificate.'."\n"
+                        'Skipping "' . $entity->getEntityId() . '" - could not verify signature using certificate.' . "\n"
                     );
                     continue;
-                }
-            }
-
-            if (array_key_exists('validateFingerprint', $source) && $source['validateFingerprint'] !== null) {
-                if (!array_key_exists('certificates', $source) || $source['certificates'] == null) {
-                    $algo = isset($source['validateFingerprintAlgorithm'])
-                        ? $source['validateFingerprintAlgorithm']
-                        : XMLSecurityDSig::SHA1;
-                    if (!$entity->validateFingerprint($source['validateFingerprint'], $algo)) {
-                        Logger::info(
-                            'Skipping "'.$entity->getEntityId().'" - could not verify signature using fingerprint.'."\n"
-                        );
-                        continue;
-                    }
-                } else {
-                    Logger::info('Skipping validation with fingerprint since option certificate is set.'."\n");
                 }
             }
 
@@ -194,12 +178,6 @@ class MetaLoader
                 $template = $source['template'];
             }
 
-            if (in_array('shib13-sp-remote', $this->types, true)) {
-                $this->addMetadata($source['src'], $entity->getMetadata1xSP(), 'shib13-sp-remote', $template);
-            }
-            if (in_array('shib13-idp-remote', $this->types, true)) {
-                $this->addMetadata($source['src'], $entity->getMetadata1xIdP(), 'shib13-idp-remote', $template);
-            }
             if (in_array('saml20-sp-remote', $this->types, true)) {
                 $this->addMetadata($source['src'], $entity->getMetadata20SP(), 'saml20-sp-remote', $template);
             }
@@ -211,7 +189,7 @@ class MetaLoader
                 if (!empty($attributeAuthorities)) {
                     $this->addMetadata(
                         $source['src'],
-                        $attributeAuthorities[0],
+                        $attributeAuthorities,
                         'attributeauthority-remote',
                         $template
                     );
@@ -229,7 +207,7 @@ class MetaLoader
      * @param array $source
      * @return array
      */
-    private function createContext(array $source)
+    private function createContext(array $source): array
     {
         $config = Configuration::getInstance();
         $name = $config->getString('technicalcontact_name', null);
@@ -242,11 +220,11 @@ class MetaLoader
                 $sourceState = $this->state[$source['src']];
 
                 if (isset($sourceState['last-modified'])) {
-                    $rawheader .= 'If-Modified-Since: '.$sourceState['last-modified']."\r\n";
+                    $rawheader .= 'If-Modified-Since: ' . $sourceState['last-modified'] . "\r\n";
                 }
 
                 if (isset($sourceState['etag'])) {
-                    $rawheader .= 'If-None-Match: '.$sourceState['etag']."\r\n";
+                    $rawheader .= 'If-None-Match: ' . $sourceState['etag'] . "\r\n";
                 }
             }
         }
@@ -259,7 +237,7 @@ class MetaLoader
      * @param array $source
      * @return void
      */
-    private function addCachedMetadata(array $source)
+    private function addCachedMetadata(array $source): void
     {
         if (isset($this->oldMetadataSrc)) {
             foreach ($this->types as $type) {
@@ -282,7 +260,7 @@ class MetaLoader
      * @param array|null $responseHeaders
      * @return void
      */
-    private function saveState(array $source, $responseHeaders)
+    private function saveState(array $source, ?array $responseHeaders): void
     {
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             // Headers section
@@ -313,15 +291,12 @@ class MetaLoader
      * @return \SimpleSAML\Metadata\SAMLParser[]
      * @throws \Exception
      */
-    private function loadXML($data, array $source)
+    private function loadXML(string $data, array $source): array
     {
         try {
             $doc = \SAML2\DOMDocumentFactory::fromString($data);
         } catch (\Exception $e) {
-            throw new \Exception('Failed to read XML from '.$source['src']);
-        }
-        if ($doc->documentElement === null) {
-            throw new \Exception('Opened file is not an XML document: '.$source['src']);
+            throw new \Exception('Failed to read XML from ' . $source['src']);
         }
         return \SimpleSAML\Metadata\SAMLParser::parseDescriptorsElement($doc->documentElement);
     }
@@ -332,15 +307,15 @@ class MetaLoader
      *
      * @return void
      */
-    public function writeState()
+    public function writeState(): void
     {
-        if ($this->changed) {
-            Logger::debug('Writing: '.$this->stateFile);
+        if ($this->changed && !is_null($this->stateFile)) {
+            Logger::debug('Writing: ' . $this->stateFile);
             \SimpleSAML\Utils\System::writeFile(
                 $this->stateFile,
-                "<?php\n/* This file was generated by the metarefresh module at ".$this->getTime().".\n".
-                " Do not update it manually as it will get overwritten. */\n".
-                '$state = '.var_export($this->state, true).";\n?>\n",
+                "<?php\n/* This file was generated by the metarefresh module at " . $this->getTime() . ".\n" .
+                " Do not update it manually as it will get overwritten. */\n" .
+                '$state = ' . var_export($this->state, true) . ";\n?>\n",
                 0644
             );
         }
@@ -352,22 +327,22 @@ class MetaLoader
      *
      * @return void
      */
-    public function dumpMetadataStdOut()
+    public function dumpMetadataStdOut(): void
     {
         foreach ($this->metadata as $category => $elements) {
-            echo '/* The following data should be added to metadata/'.$category.'.php. */'."\n";
+            echo '/* The following data should be added to metadata/' . $category . '.php. */' . "\n";
 
             foreach ($elements as $m) {
                 $filename = $m['filename'];
                 $entityID = $m['metadata']['entityid'];
 
                 echo "\n";
-                echo '/* The following metadata was generated from '.$filename.' on '.$this->getTime().'. */'."\n";
-                echo '$metadata[\''.addslashes($entityID).'\'] = '.var_export($m['metadata'], true).';'."\n";
+                echo '/* The following metadata was generated from ' . $filename . ' on ' . $this->getTime() . '. */' . "\n";
+                echo '$metadata[\'' . addslashes($entityID) . '\'] = ' . var_export($m['metadata'], true) . ';' . "\n";
             }
 
             echo "\n";
-            echo '/* End of data which should be added to metadata/'.$category.'.php. */'."\n";
+            echo '/* End of data which should be added to metadata/' . $category . '.php. */' . "\n";
             echo "\n";
         }
     }
@@ -378,12 +353,12 @@ class MetaLoader
      * This function will return without making any changes if $metadata is NULL.
      *
      * @param string $filename The filename the metadata comes from.
-     * @param array|null $metadata The metadata.
+     * @param \SAML2\XML\md\AttributeAuthorityDescriptor[]|null $metadata The metadata.
      * @param string $type The metadata type.
      * @param array|null $template The template.
      * @return void
      */
-    private function addMetadata($filename, $metadata, $type, array $template = null)
+    private function addMetadata(string $filename, ?array $metadata, string $type, array $template = null): void
     {
         if ($metadata === null) {
             return;
@@ -422,10 +397,8 @@ class MetaLoader
      * @param \SimpleSAML\Configuration $config
      * @return void
      */
-    public function writeARPfile(Configuration $config)
+    public function writeARPfile(Configuration $config): void
     {
-        Assert::isInstanceOf($config, Configuration::class);
-
         $arpfile = $config->getValue('arpfile');
         $types = ['saml20-sp-remote'];
 
@@ -448,7 +421,7 @@ class MetaLoader
 
         $arpxml = $arp->getXML();
 
-        Logger::info('Writing ARP file: '.$arpfile."\n");
+        Logger::info('Writing ARP file: ' . $arpfile . "\n");
         file_put_contents($arpfile, $arpxml);
     }
 
@@ -459,44 +432,44 @@ class MetaLoader
      * @param string $outputDir
      * @return void
      */
-    public function writeMetadataFiles($outputDir)
+    public function writeMetadataFiles(string $outputDir): void
     {
         while (strlen($outputDir) > 0 && $outputDir[strlen($outputDir) - 1] === '/') {
             $outputDir = substr($outputDir, 0, strlen($outputDir) - 1);
         }
 
         if (!file_exists($outputDir)) {
-            Logger::info('Creating directory: '.$outputDir."\n");
+            Logger::info('Creating directory: ' . $outputDir . "\n");
             $res = @mkdir($outputDir, 0777, true);
             if ($res === false) {
-                throw new \Exception('Error creating directory: '.$outputDir);
+                throw new \Exception('Error creating directory: ' . $outputDir);
             }
         }
 
         foreach ($this->types as $type) {
-            $filename = $outputDir.'/'.$type.'.php';
+            $filename = $outputDir . '/' . $type . '.php';
 
             if (array_key_exists($type, $this->metadata)) {
                 $elements = $this->metadata[$type];
-                Logger::debug('Writing: '.$filename);
+                Logger::debug('Writing: ' . $filename);
 
-                $content  = '<?php'."\n".'/* This file was generated by the metarefresh module at ';
-                $content .= $this->getTime()."\nDo not update it manually as it will get overwritten\n".'*/'."\n";
+                $content  = '<?php' . "\n" . '/* This file was generated by the metarefresh module at ';
+                $content .= $this->getTime() . "\nDo not update it manually as it will get overwritten\n" . '*/' . "\n";
 
                 foreach ($elements as $m) {
                     $entityID = $m['metadata']['entityid'];
-                    $content .= "\n".'$metadata[\'';
-                    $content .= addslashes($entityID).'\'] = '.var_export($m['metadata'], true).';'."\n";
+                    $content .= "\n" . '$metadata[\'';
+                    $content .= addslashes($entityID) . '\'] = ' . var_export($m['metadata'], true) . ';' . "\n";
                 }
 
-                $content .= "\n".'?>';
+                $content .= "\n" . '?>';
 
                 \SimpleSAML\Utils\System::writeFile($filename, $content, 0644);
             } elseif (is_file($filename)) {
                 if (unlink($filename)) {
-                    Logger::debug('Deleting stale metadata file: '.$filename);
+                    Logger::debug('Deleting stale metadata file: ' . $filename);
                 } else {
-                    Logger::warning('Could not delete stale metadata file: '.$filename);
+                    Logger::warning('Could not delete stale metadata file: ' . $filename);
                 }
             }
         }
@@ -509,10 +482,8 @@ class MetaLoader
      * @param string $outputDir  The directory we should save the metadata to.
      * @return void
      */
-    public function writeMetadataSerialize($outputDir)
+    public function writeMetadataSerialize(string $outputDir): void
     {
-        Assert::string($outputDir);
-
         $metaHandler = new \SimpleSAML\Metadata\MetaDataStorageHandlerSerialize(['directory' => $outputDir]);
 
         // First we add all the metadata entries to the metadata handler
@@ -521,8 +492,8 @@ class MetaLoader
                 $entityId = $m['metadata']['entityid'];
 
                 Logger::debug(
-                    'metarefresh: Add metadata entry '.
-                    var_export($entityId, true).' in set '.var_export($set, true).'.'
+                    'metarefresh: Add metadata entry ' .
+                    var_export($entityId, true) . ' in set ' . var_export($set, true) . '.'
                 );
                 $metaHandler->saveMetadata($entityId, $set, $m['metadata']);
             }
@@ -534,19 +505,19 @@ class MetaLoader
             foreach ($metaHandler->getMetadataSet($set) as $entityId => $metadata) {
                 if (!array_key_exists('expire', $metadata)) {
                     Logger::warning(
-                        'metarefresh: Metadata entry without expire timestamp: '.var_export($entityId, true).
-                        ' in set '.var_export($set, true).'.'
+                        'metarefresh: Metadata entry without expire timestamp: ' . var_export($entityId, true) .
+                        ' in set ' . var_export($set, true) . '.'
                     );
                     continue;
                 }
                 if ($metadata['expire'] > $ct) {
                     continue;
                 }
-                Logger::debug('metarefresh: '.$entityId.' expired '.date('l jS \of F Y h:i:s A', $metadata['expire']));
+                Logger::debug('metarefresh: ' . $entityId . ' expired ' . date('l jS \of F Y h:i:s A', $metadata['expire']));
                 Logger::debug(
-                    'metarefresh: Delete expired metadata entry '.
-                    var_export($entityId, true).' in set '.var_export($set, true).
-                    '. ('.($ct - $metadata['expire']).' sec)'
+                    'metarefresh: Delete expired metadata entry ' .
+                    var_export($entityId, true) . ' in set ' . var_export($set, true) .
+                    '. (' . ($ct - $metadata['expire']) . ' sec)'
                 );
                 $metaHandler->deleteMetadata($entityId, $set);
             }
@@ -557,7 +528,7 @@ class MetaLoader
     /**
      * @return string
      */
-    private function getTime()
+    private function getTime(): string
     {
         // The current date, as a string
         date_default_timezone_set('UTC');
