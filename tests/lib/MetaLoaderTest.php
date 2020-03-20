@@ -82,9 +82,9 @@ class MetaLoaderTest extends TestCase
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
-        $this->assertArraySubset(
-            $this->expected,
-            $metadata['https://idp.example.com/idp/shibboleth']
+
+        $this->assertTrue(
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
         );
     }
 
@@ -107,9 +107,8 @@ class MetaLoaderTest extends TestCase
 
         @include_once($this->tmpdir . '/saml20-idp-remote.php');
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
-        $this->assertArraySubset(
-            $this->expected,
-            $metadata['https://idp.example.com/idp/shibboleth']
+        $this->assertTrue(
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
         );
     }
 }
