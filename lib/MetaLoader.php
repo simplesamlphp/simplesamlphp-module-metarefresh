@@ -166,20 +166,25 @@ class MetaLoader
 
             /* Do we have an attribute whitelist? */
             if (isset($source['attributewhitelist']) && !empty($source['attributewhitelist'])) {
-                $idpmetadata = $entity->getMetadata20IdP();
-                if (!isset($idpmetadata)) /* Skip non-IdPs */
+                $idpMetadata = $entity->getMetadata20IdP();
+                if (!isset($idpMetadata)) {
+                    /* Skip non-IdPs */
                     continue;
+                }
 
-                /* Do a recursive comparison for each whitelist of the attributewhitelist with the idpmetadata for this IdP. At least one of these whitelists should match */
-                $match=0;
-                foreach ($source['attributewhitelist'] as $whitelist)   {
-                    if ($this->containsArray($whitelist, $idpmetadata)) {
-                        $match=1;
+                /* Do a recursive comparison for each whitelist of the attributewhitelist with the idpMetadata for this
+                 * IdP. At least one of these whitelists should match */
+                $match = false;
+                foreach ($source['attributewhitelist'] as $whitelist) {
+                    if ($this->containsArray($whitelist, $idpMetadata)) {
+                        $match = true;
                         break;
                     }
                 }
-                if ($match==0) /* No match found -> next IdP */
+                if (!$match) {
+                    /* No match found -> next IdP */
                     continue;
+                }
                 Logger::debug('Whitelisted entityID: '. $entity->getEntityID());
             }
 
@@ -224,49 +229,55 @@ class MetaLoader
      * Recursively checks whether array $dst contains array $src. If $src
      * is not an array, a literal comparison is being performed.
      */
-    private function containsArray($src, $dst) {
+    private function containsArray($src, $dst): bool
+    {
         if (is_array($src)) {
-            if (!is_array($dst))    {
+            if (!is_array($dst)) {
                 return false;
             }
-            $dstkeys=array_keys($dst);
+            $dstKeys = array_keys($dst);
 
             /* Loop over all src keys */
-            foreach($src as $srckey => $srcval)    {
-                if (is_int($srckey))    {
+            foreach ($src as $srcKey => $srcval) {
+                if (is_int($srcKey)) {
                     /* key is number, check that the key appears as one
                      * of the destination keys: if not, then src has
                      * more keys than dst */
-                    if (!array_key_exists($srckey, $dst))
+                    if (!array_key_exists($srcKey, $dst)) {
                         return false;
+                    }
 
                     /* loop over dest keys, to find value: we don't know
                      * whether they are in the same order */
-                    $submatch=0;
-                    foreach ($dstkeys as $dstkey)   {
-                        if ($this->containsArray($srcval, $dst[$dstkey])) {
-                            $submatch=1;
+                    $submatch = false;
+                    foreach ($dstKeys as $dstKey) {
+                        if ($this->containsArray($srcval, $dst[$dstKey])) {
+                            $submatch = true;
                             break;
                         }
                     }
-                    if ($submatch == 0)
+                    if (!$submatch) {
                         return false;
+                    }
                 } else {
                     /* key is regexp: find matching keys */
-                    $matchingdstkeys=preg_grep($srckey, $dstkeys);
-                    if (!is_array($matchingdstkeys))
+                    $matchingDstKeys = preg_grep($srcKey, $dstKeys);
+                    if (!is_array($matchingDstKeys)) {
                         return false;
+                    }
 
-                    $match=0;
-                    foreach ($matchingdstkeys as $dstkey) {
-                        if ($this->containsArray($srcval, $dst[$dstkey])) {
+                    $match = false;
+                    foreach ($matchingDstKeys as $dstKey) {
+                        if ($this->containsArray($srcval, $dst[$dstKey])) {
                             /* Found a match */
-                            $match=1;
+                            $match = true;
                             break;
                         }
                     }
-                    if ($match==0) /* none of the keys has a matching value */
+                    if (!$match) {
+                        /* none of the keys has a matching value */
                         return false;
+                    }
                 }
             }
             /* each src key/value matches */
