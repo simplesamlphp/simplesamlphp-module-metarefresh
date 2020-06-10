@@ -39,6 +39,17 @@ class MetaLoaderTest extends TestCase
             ],
         ],
         'scope' => ['example.com',],
+        'RegistrationInfo' => [
+            'registrationAuthority' => 'http://www.surfconext.nl/',
+        ],
+        'EntityAttributes' => [
+            'urn:oasis:names:tc:SAML:attribute:assurance-certification' => [
+                0 => 'https://refeds.org/sirtfi',
+            ],
+            'http://macedir.org/entity-category-support' => [
+                0 => 'http://refeds.org/category/research-and-scholarship',
+            ],
+        ],
         'UIInfo' => [
             'DisplayName' => ['en' => 'DisplayName',],
             'Description' => ['en' => 'Description',],
@@ -111,4 +122,24 @@ class MetaLoaderTest extends TestCase
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
         );
     }
+
+    public function testAttributewhitelist(): void
+    {
+        $this->source['attributewhitelist'] = [
+            [
+                '#EntityAttributes#' => [
+                    '#urn:oasis:names:tc:SAML:attribute:assurance-certification#'
+                    => ['#https://refeds.org/sirtfi#'],
+                    '#http://macedir.org/entity-category-support#'
+                    => ['#http://refeds.org/category/research-and-scholarship#'],
+                ],
+            ],
+        ];
+        $this->metaloader->loadSource($this->source);
+        $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
+        $this->assertTrue(
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
+        );
+    }
+
 }
