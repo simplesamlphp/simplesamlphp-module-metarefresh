@@ -2,9 +2,13 @@
 
 namespace SimpleSAML\Module\metarefresh;
 
+use Exception;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
+use SAML2\DOMDocumentFactory;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
+use SimpleSAML\Metadata;
+use SimpleSAML\Utils;
 use Webmozart\Assert\Assert;
 
 /**
@@ -106,8 +110,10 @@ class MetaLoader
 
             // GET!
             try {
-                list($data, $responseHeaders) = \SimpleSAML\Utils\HTTP::fetch($source['src'], $context, true);
-            } catch (\Exception $e) {
+                /** @var array $response  We know this because we set the third parameter to `true` */
+                $response = Utils\HTTP::fetch($source['src'], $context, true);
+                list($data, $responseHeaders) = $response;
+            } catch (Exception $e) {
                 Logger::warning('metarefresh: ' . $e->getMessage());
             }
 
@@ -142,7 +148,7 @@ class MetaLoader
 
         try {
             $entities = $this->loadXML($data, $source);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Logger::debug('XML parser error when parsing ' . $source['src'] . ' - attempting to re-use cached metadata');
             Logger::debug('XML parser returned: ' . $e->getMessage());
             $this->addCachedMetadata($source);
@@ -162,6 +168,30 @@ class MetaLoader
                     Logger::info('Skipping "' . $entity->getEntityId() . '" - not in the whitelist.' . "\n");
                     continue;
                 }
+            }
+
+            /* Do we have an attribute whitelist? */
+            if (isset($source['attributewhitelist']) && !empty($source['attributewhitelist'])) {
+                $idpMetadata = $entity->getMetadata20IdP();
+                if (!isset($idpMetadata)) {
+                    /* Skip non-IdPs */
+                    continue;
+                }
+
+                /* Do a recursive comparison for each whitelist of the attributewhitelist with the idpMetadata for this
+                 * IdP. At least one of these whitelists should match */
+                $match = false;
+                foreach ($source['attributewhitelist'] as $whitelist) {
+                    if ($this->containsArray($whitelist, $idpMetadata)) {
+                        $match = true;
+                        break;
+                    }
+                }
+                if (!$match) {
+                    /* No match found -> next IdP */
+                    continue;
+                }
+                Logger::debug('Whitelisted entityID: ' . $entity->getEntityID());
             }
 
             if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
@@ -200,6 +230,70 @@ class MetaLoader
         $this->saveState($source, $responseHeaders);
     }
 
+
+    /*
+     * Recursively checks whether array $dst contains array $src. If $src
+     * is not an array, a literal comparison is being performed.
+     */
+    private function containsArray($src, $dst): bool
+    {
+        if (is_array($src)) {
+            if (!is_array($dst)) {
+                return false;
+            }
+            $dstKeys = array_keys($dst);
+
+            /* Loop over all src keys */
+            foreach ($src as $srcKey => $srcval) {
+                if (is_int($srcKey)) {
+                    /* key is number, check that the key appears as one
+                     * of the destination keys: if not, then src has
+                     * more keys than dst */
+                    if (!array_key_exists($srcKey, $dst)) {
+                        return false;
+                    }
+
+                    /* loop over dest keys, to find value: we don't know
+                     * whether they are in the same order */
+                    $submatch = false;
+                    foreach ($dstKeys as $dstKey) {
+                        if ($this->containsArray($srcval, $dst[$dstKey])) {
+                            $submatch = true;
+                            break;
+                        }
+                    }
+                    if (!$submatch) {
+                        return false;
+                    }
+                } else {
+                    /* key is regexp: find matching keys */
+                    /** @var array|false $matchingDstKeys */
+                    $matchingDstKeys = preg_grep($srcKey, $dstKeys);
+                    if (!is_array($matchingDstKeys)) {
+                        return false;
+                    }
+
+                    $match = false;
+                    foreach ($matchingDstKeys as $dstKey) {
+                        if ($this->containsArray($srcval, $dst[$dstKey])) {
+                            /* Found a match */
+                            $match = true;
+                            break;
+                        }
+                    }
+                    if (!$match) {
+                        /* none of the keys has a matching value */
+                        return false;
+                    }
+                }
+            }
+            /* each src key/value matches */
+            return true;
+        } else {
+            /* src is not an array, do a regexp match against dst */
+            return (preg_match($src, $dst) === 1);
+        }
+    }
 
     /**
      * Create HTTP context, with any available caches taken into account
@@ -294,11 +388,11 @@ class MetaLoader
     private function loadXML(string $data, array $source): array
     {
         try {
-            $doc = \SAML2\DOMDocumentFactory::fromString($data);
-        } catch (\Exception $e) {
-            throw new \Exception('Failed to read XML from ' . $source['src']);
+            $doc = DOMDocumentFactory::fromString($data);
+        } catch (Exception $e) {
+            throw new Exception('Failed to read XML from ' . $source['src']);
         }
-        return \SimpleSAML\Metadata\SAMLParser::parseDescriptorsElement($doc->documentElement);
+        return Metadata\SAMLParser::parseDescriptorsElement($doc->documentElement);
     }
 
 
@@ -311,7 +405,7 @@ class MetaLoader
     {
         if ($this->changed && !is_null($this->stateFile)) {
             Logger::debug('Writing: ' . $this->stateFile);
-            \SimpleSAML\Utils\System::writeFile(
+            Utils\System::writeFile(
                 $this->stateFile,
                 "<?php\n/* This file was generated by the metarefresh module at " . $this->getTime() . ".\n" .
                 " Do not update it manually as it will get overwritten. */\n" .
@@ -411,7 +505,7 @@ class MetaLoader
         }
 
         // $metadata, $attributemap, $prefix, $suffix
-        $arp = new \SimpleSAML\Module\metarefresh\ARP(
+        $arp = new ARP(
             $md,
             $config->getValue('attributemap', ''),
             $config->getValue('prefix', ''),
@@ -442,7 +536,7 @@ class MetaLoader
             Logger::info('Creating directory: ' . $outputDir . "\n");
             $res = @mkdir($outputDir, 0777, true);
             if ($res === false) {
-                throw new \Exception('Error creating directory: ' . $outputDir);
+                throw new Exception('Error creating directory: ' . $outputDir);
             }
         }
 
@@ -464,7 +558,7 @@ class MetaLoader
 
                 $content .= "\n" . '?>';
 
-                \SimpleSAML\Utils\System::writeFile($filename, $content, 0644);
+                Utils\System::writeFile($filename, $content, 0644);
             } elseif (is_file($filename)) {
                 if (unlink($filename)) {
                     Logger::debug('Deleting stale metadata file: ' . $filename);
@@ -484,7 +578,7 @@ class MetaLoader
      */
     public function writeMetadataSerialize(string $outputDir): void
     {
-        $metaHandler = new \SimpleSAML\Metadata\MetaDataStorageHandlerSerialize(['directory' => $outputDir]);
+        $metaHandler = new Metadata\MetaDataStorageHandlerSerialize(['directory' => $outputDir]);
 
         // First we add all the metadata entries to the metadata handler
         foreach ($this->metadata as $set => $elements) {
@@ -503,21 +597,26 @@ class MetaLoader
         $ct = time();
         foreach ($metaHandler->getMetadataSets() as $set) {
             foreach ($metaHandler->getMetadataSet($set) as $entityId => $metadata) {
-                if (!array_key_exists('expire', $metadata)) {
+                if (!array_key_exists('expire', $metadata) || !is_int($metadata['expire'])) {
                     Logger::warning(
-                        'metarefresh: Metadata entry without expire timestamp: ' . var_export($entityId, true) .
+                        'metarefresh: Metadata entry without valid expire timestamp: ' . var_export($entityId, true) .
                         ' in set ' . var_export($set, true) . '.'
                     );
                     continue;
                 }
-                if ($metadata['expire'] > $ct) {
+
+                $expire = $metadata['expire'];
+                if ($expire > $ct) {
                     continue;
                 }
-                Logger::debug('metarefresh: ' . $entityId . ' expired ' . date('l jS \of F Y h:i:s A', $metadata['expire']));
+
+                /** @var int $stamp */
+                $stamp = date('l jS \of F Y h:i:s A', $expire);
+                Logger::debug('metarefresh: ' . $entityId . ' expired ' . $stamp);
                 Logger::debug(
                     'metarefresh: Delete expired metadata entry ' .
                     var_export($entityId, true) . ' in set ' . var_export($set, true) .
-                    '. (' . ($ct - $metadata['expire']) . ' sec)'
+                    '. (' . ($ct - $expire) . ' sec)'
                 );
                 $metaHandler->deleteMetadata($entityId, $set);
             }
