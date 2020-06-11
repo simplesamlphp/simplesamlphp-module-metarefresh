@@ -106,7 +106,9 @@ class MetaLoader
 
             // GET!
             try {
-                list($data, $responseHeaders) = \SimpleSAML\Utils\HTTP::fetch($source['src'], $context, true);
+                /** @var array $response  We know this because we set the third parameter to `true` */
+                $response = \SimpleSAML\Utils\HTTP::fetch($source['src'], $context, true);
+                list($data, $responseHeaders) = $response;
             } catch (\Exception $e) {
                 Logger::warning('metarefresh: ' . $e->getMessage());
             }
