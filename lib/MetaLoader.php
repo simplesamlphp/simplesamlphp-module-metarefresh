@@ -261,6 +261,7 @@ class MetaLoader
                     }
                 } else {
                     /* key is regexp: find matching keys */
+                    /** @var array|false $matchingDstKeys */
                     $matchingDstKeys = preg_grep($srcKey, $dstKeys);
                     if (!is_array($matchingDstKeys)) {
                         return false;
