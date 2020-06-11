@@ -185,7 +185,7 @@ class MetaLoader
                     /* No match found -> next IdP */
                     continue;
                 }
-                Logger::debug('Whitelisted entityID: '. $entity->getEntityID());
+                Logger::debug('Whitelisted entityID: ' . $entity->getEntityID());
             }
 
             if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
