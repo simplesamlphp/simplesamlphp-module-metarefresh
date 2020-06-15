@@ -157,7 +157,7 @@ class MetaLoaderTest extends TestCase
     /*
      * Test two matching EntityAttributes (R&S + Sirtfi)
      */
-    public function testAttributewhitelist1(): void
+    public function testAttributewhitelist1()
     {
         $this->source['attributewhitelist'] = [
             [
@@ -191,7 +191,7 @@ class MetaLoaderTest extends TestCase
     /*
      * Test non-matching of the whitelist: result should be empty set
      */
-    public function testAttributewhitelist2(): void
+    public function testAttributewhitelist2()
     {
         $this->source['attributewhitelist'] = [
             [
@@ -215,7 +215,7 @@ class MetaLoaderTest extends TestCase
      * Test non-matching of first entry, but matching of second, using both
      * RegistrationInfo and EntityAttributes
      */
-    public function testAttributewhitelist3(): void
+    public function testAttributewhitelist3()
     {
         $this->source['attributewhitelist'] = [
             [
