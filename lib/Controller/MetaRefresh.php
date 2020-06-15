@@ -10,8 +10,11 @@ use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Logger;
 use SimpleSAML\Module\metarefresh\MetaLoader;
+use SimpleSAML\Session;
 use SimpleSAML\Utils;
 use SimpleSAML\XHTML\Template;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Controller class for the metarefresh module.
@@ -31,6 +34,12 @@ class MetaRefresh
 
     /** @var \SimpleSAML\Configuration */
     protected $module_config;
+
+    /**
+     * @var \SimpleSAML\Utils\Auth|string
+     * @psalm-var \SimpleSAML\Utils\Auth|class-string
+     */
+    protected $authUtils = Utils\Auth::class;
 
 
     /**
@@ -54,15 +63,25 @@ class MetaRefresh
 
 
     /**
+     * Inject the \SimpleSAML\Utils\Auth dependency.
+     *
+     * @param \SimpleSAML\Utils\Auth $authUtils
+     */
+    public function setAuthUtils(Utils\Auth $authUtils): void
+    {
+        $this->authUtils = $authUtils;
+    }
+
+
+    /**
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @return \SimpleSAML\XHTML\Template
      */
     public function main(Request $request): Template
     {
-        Utils\Auth::requireAdmin();
+        $this->authUtils::requireAdmin();
 
         Logger::setCaptureLog(true);
-
         $sets = $this->module_config->getArray('sets', []);
 
         foreach ($sets as $setkey => $set) {
@@ -139,7 +158,7 @@ class MetaRefresh
 
         $logentries = Logger::getCapturedLog();
 
-        $t = new Template($config, 'metarefresh:fetch.twig');
+        $t = new Template($this->config, 'metarefresh:fetch.twig');
         $t->data['logentries'] = $logentries;
         return $t;
     }

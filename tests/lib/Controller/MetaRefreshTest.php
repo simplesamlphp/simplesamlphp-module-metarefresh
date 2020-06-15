@@ -10,6 +10,7 @@ use SimpleSAML\Configuration;
 use SimpleSAML\Error;
 use SimpleSAML\Module\metarefresh\Controller;
 use SimpleSAML\Session;
+use SimpleSAML\Utils;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,9 @@ class MetaRefreshTest extends TestCase
 {
     /** @var \SimpleSAML\Configuration */
     protected $config;
+
+    /** @var \SimpleSAML\Utils\Auth */
+    protected $authUtils;
 
 
     /**
@@ -42,6 +46,21 @@ class MetaRefreshTest extends TestCase
             'simplesaml'
         );
 
+        $this->authsources = Configuration::loadFromArray(
+            [
+                'admin' => ['core:AdminPassword'],
+            ],
+            '[ARRAY]',
+            'simplesaml'
+        );
+
+        $this->authUtils = new class () extends Utils\Auth {
+            public static function requireAdmin(): void
+            {
+                // stub
+            }
+        };
+
         Configuration::setPreLoadedConfig($this->config, 'config.php');
     }
 
@@ -51,6 +70,11 @@ class MetaRefreshTest extends TestCase
      */
     public function testMetaRefresh()
     {
+        $_SERVER['REQUEST_URI'] = '/module.php/metarefresh/';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
+
+        Configuration::setPreLoadedConfig($this->authsources, 'authsources.php');
         $request = Request::create(
             '/',
             'GET'
@@ -58,12 +82,11 @@ class MetaRefreshTest extends TestCase
         $session = Session::getSessionFromRequest();
 
         $c = new Controller\MetaRefresh($this->config, $session);
+        $c->setAuthUtils($this->authUtils);
 
         /** @var \SimpleSAML\XHTML\Template $response */
         $response = $c->main($request);
 
-        $this->assertInstanceOf(Template::class, $response);
         $this->assertTrue($response->isSuccessful());
     }
 }
-
