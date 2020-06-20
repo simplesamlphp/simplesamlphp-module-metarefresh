@@ -25,6 +25,9 @@ class MetaRefreshTest extends TestCase
     /** @var \SimpleSAML\Configuration */
     protected $config;
 
+    /** @var \SimpleSAML\Configuration */
+    protected $module_config;
+
     /** @var \SimpleSAML\Utils\Auth */
     protected $authUtils;
 
@@ -41,6 +44,19 @@ class MetaRefreshTest extends TestCase
             [
                 'baseurlpath' => 'https://example.org/simplesaml',
                 'module.enable' => ['metarefresh' => true],
+            ],
+            '[ARRAY]',
+            'simplesaml'
+        );
+
+        $this->module_config = Configuration::loadFromArray(
+            [
+                'sets' => [
+                    'example' => [
+                        'cron' => ['hourly'],
+                        'sources' => []
+                    ]
+                ]
             ],
             '[ARRAY]',
             'simplesaml'
@@ -74,6 +90,7 @@ class MetaRefreshTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
+        Configuration::setPreLoadedConfig($this->module_config, 'module_metarefresh');
         Configuration::setPreLoadedConfig($this->authsources, 'authsources.php');
         $request = Request::create(
             '/',
