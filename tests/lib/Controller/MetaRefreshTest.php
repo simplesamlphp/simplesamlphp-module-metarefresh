@@ -54,7 +54,13 @@ class MetaRefreshTest extends TestCase
                 'sets' => [
                     'example' => [
                         'cron' => ['hourly'],
-                        'sources' => []
+                        'sources' => [
+                            [
+                                'src' => 'https://example.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway'
+                            ]
+                        ],
+                        'outputFormat' => 'flatfile',
+                        'outputDir' => sys_get_temp_dir()
                     ]
                 ]
             ],
