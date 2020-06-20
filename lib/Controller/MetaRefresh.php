@@ -58,7 +58,7 @@ class MetaRefresh
     ) {
         $this->config = $config;
         $this->session = $session;
-        $this->module_config = Configuration::getOptionalConfig('config-metarefresh.php');
+        $this->module_config = Configuration::getOptionalConfig('module_metarefresh.php');
     }
 
 
@@ -74,10 +74,9 @@ class MetaRefresh
 
 
     /**
-     * @param \Symfony\Component\HttpFoundation\Request $request
      * @return \SimpleSAML\XHTML\Template
      */
-    public function main(Request $request): Template
+    public function main(): Template
     {
         $this->authUtils::requireAdmin();
 
@@ -99,8 +98,8 @@ class MetaRefresh
                 $metaloader = new MetaLoader($expire);
 
                 // Get global black/whitelists
-                $blacklist = $mconfig->getArray('blacklist', []);
-                $whitelist = $mconfig->getArray('whitelist', []);
+                $blacklist = $this->module_config->getArray('blacklist', []);
+                $whitelist = $this->module_config->getArray('whitelist', []);
 
                 // get global type filters
                 $available_types = [

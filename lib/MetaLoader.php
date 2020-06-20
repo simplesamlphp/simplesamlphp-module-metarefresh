@@ -99,7 +99,7 @@ class MetaLoader
     /**
      * This function processes a SAML metadata file.
      *
-     * @param $source array
+     * @param array $source
      * @return void
      */
     public function loadSource(array $source): void
@@ -149,7 +149,9 @@ class MetaLoader
         try {
             $entities = $this->loadXML($data, $source);
         } catch (Exception $e) {
-            Logger::debug('XML parser error when parsing ' . $source['src'] . ' - attempting to re-use cached metadata');
+            Logger::debug(
+                'XML parser error when parsing ' . $source['src'] . ' - attempting to re-use cached metadata'
+            );
             Logger::debug('XML parser returned: ' . $e->getMessage());
             $this->addCachedMetadata($source);
             return;
@@ -196,8 +198,9 @@ class MetaLoader
 
             if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
                 if (!$entity->validateSignature($source['certificates'])) {
+                    $entityId = $entity->getEntityId();
                     Logger::info(
-                        'Skipping "' . $entity->getEntityId() . '" - could not verify signature using certificate.' . "\n"
+                        'Skipping "' . $entityId . '" - could not verify signature using certificate.' . "\n"
                     );
                     continue;
                 }
@@ -231,7 +234,11 @@ class MetaLoader
     }
 
 
-    /*
+    /**
+     * @param array|string $src
+     * @param array|string $dst
+     * @return bool
+     *
      * Recursively checks whether array $dst contains array $src. If $src
      * is not an array, a literal comparison is being performed.
      */
@@ -291,7 +298,7 @@ class MetaLoader
             return true;
         } else {
             /* src is not an array, do a regexp match against dst */
-            return (preg_match($src, $dst) === 1);
+            return (preg_match($src, strval($dst)) === 1);
         }
     }
 
@@ -429,9 +436,9 @@ class MetaLoader
             foreach ($elements as $m) {
                 $filename = $m['filename'];
                 $entityID = $m['metadata']['entityid'];
-
+                $time = $this->getTime();
                 echo "\n";
-                echo '/* The following metadata was generated from ' . $filename . ' on ' . $this->getTime() . '. */' . "\n";
+                echo '/* The following metadata was generated from ' . $filename . ' on ' . $time . '. */' . "\n";
                 echo '$metadata[\'' . addslashes($entityID) . '\'] = ' . var_export($m['metadata'], true) . ';' . "\n";
             }
 

@@ -57,6 +57,7 @@ class ARP
     private function loadAttributeMap(string $attributemap_filename): void
     {
         $config = \SimpleSAML\Configuration::getInstance();
+        /** @psalm-suppress PossiblyNullOperand */
         include($config->getPathValue('attributemap', 'attributemap/') . $attributemap_filename . '.php');
         // Note that $attributemap is defined in the included attributemap-file!
         $this->attributes = $attributemap;
