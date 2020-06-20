@@ -58,7 +58,6 @@ class MetaRefresh
     ) {
         $this->config = $config;
         $this->session = $session;
-        $this->module_config = Configuration::getOptionalConfig('module_metarefresh.php');
     }
 
 
@@ -70,6 +69,17 @@ class MetaRefresh
     public function setAuthUtils(Utils\Auth $authUtils): void
     {
         $this->authUtils = $authUtils;
+    }
+
+
+    /**
+     * Inject the \SimpleSAML\Configuration dependency.
+     *
+     * @param \SimpleSAML\Configuration $module_config
+     */
+    public function setModuleConfig(Configuration $module_config): void
+    {
+        $this->module_config = $module_config;
     }
 
 

@@ -90,7 +90,6 @@ class MetaRefreshTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
-        Configuration::setPreLoadedConfig($this->module_config, 'module_metarefresh');
         Configuration::setPreLoadedConfig($this->authsources, 'authsources.php');
         $request = Request::create(
             '/',
@@ -100,6 +99,7 @@ class MetaRefreshTest extends TestCase
 
         $c = new Controller\MetaRefresh($this->config, $session);
         $c->setAuthUtils($this->authUtils);
+        $c->setModuleConfig($this->module_config);
 
         /** @var \SimpleSAML\XHTML\Template $response */
         $response = $c->main($request);
