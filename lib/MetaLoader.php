@@ -256,7 +256,7 @@ class MetaLoader
      * Recursively checks whether array $dst contains array $src. If $src
      * is not an array, a literal comparison is being performed.
      */
-    private function containsArray($src, $dst): bool
+    private function containsArray($src, $dst)
     {
         if (is_array($src)) {
             if (!is_array($dst)) {
