@@ -9,7 +9,6 @@
         <directory name="hooks" />
         <directory name="lib" />
         <directory name="templates" />
-        <directory name="www" />
     </projectFiles>
 
     <issueHandlers>

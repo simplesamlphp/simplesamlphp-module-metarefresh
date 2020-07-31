@@ -1,0 +1,3 @@
+metarefresh-main:
+    path:       /
+    defaults:   { _controller: 'SimpleSAML\Module\metarefresh\Controller\MetaRefreshCheck::main' }

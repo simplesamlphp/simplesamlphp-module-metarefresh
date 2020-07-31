@@ -8,13 +8,22 @@ use SimpleSAML\Configuration;
 
 class MetaLoaderTest extends TestCase
 {
+    /** \SimpleSAML\Module\metarefresh\MetaLoader */
     private $metaloader;
+
+    /** @var \SimpleSAML\Configuration */
     private $config;
+
+    /** @var string */
     private $tmpdir;
+
+    /** @var array */
     private $source = [
         'outputFormat' => 'flatfile',
         'conditionalGET' => false,
     ];
+
+    /** @var array */
     private $expected = [
         'entityid' => 'https://idp.example.com/idp/shibboleth',
         'description' => ['en' => 'OrganizationName',],
@@ -83,6 +92,7 @@ class MetaLoaderTest extends TestCase
     {
         $this->metaloader->loadSource($this->source);
         $this->metaloader->dumpMetadataStdOut();
+
         /* match a line from the cert before we attempt to parse */
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
 
@@ -112,6 +122,7 @@ class MetaLoaderTest extends TestCase
     {
         $this->tmpdir = tempnam(sys_get_temp_dir(), 'SSP:tests:metarefresh:');
         @unlink($this->tmpdir); /* work around post 4.0.3 behaviour */
+
         $this->metaloader->loadSource($this->source);
         $this->metaloader->writeMetadataFiles($this->tmpdir);
         $this->assertFileExists($this->tmpdir . '/saml20-idp-remote.php');
