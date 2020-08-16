@@ -5,11 +5,11 @@ namespace SimpleSAML\Module\metarefresh;
 use Exception;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use SAML2\DOMDocumentFactory;
+use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata;
 use SimpleSAML\Utils;
-use Webmozart\Assert\Assert;
 
 /**
  * @package SimpleSAMLphp
