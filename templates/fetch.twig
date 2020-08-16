@@ -1,18 +1,18 @@
-{% set pagetitle = "metarefresh_header" | trans %}
+{% set pagetitle = "Metarefresh" | trans %}
 
 {% extends "base.twig" %}
 
 {% block content %}
 
 {% if logentries %}
-        <h1>{{ "metarefresh_fetched" | trans }}</h1>
+        <h1>{{ "Fetched metadata" | trans }}</h1>
         <ul>
             {% for logentry in logentries %}
             <li>{{ logentry }}</li>
             {% endfor %}
         </ul>
 {% else %}
-{{ "metarefresh_no_output" | trans }}
+{{ "No output from metarefresh." | trans }}
 {% endif %}
 
 {% endblock content %}
