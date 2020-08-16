@@ -174,14 +174,17 @@ class MetaLoader
                 $template = $source['template'];
             }
 
-	    if (array_key_exists('regex-template', $source)) {
-		foreach($source['regex-template'] as $e => $t) {
-		    if(preg_match($e, $entity->getEntityID())) {
-			if(is_array($template)) $template = array_merge($template,$t);
-			else $template = $t;
-		    }
-		}
-	    }
+            if (array_key_exists('regex-template', $source)) {
+                foreach ($source['regex-template'] as $e => $t) {
+                    if (preg_match($e, $entity->getEntityID())) {
+                        if (is_array($template)) {
+                            $template = array_merge($template, $t);
+                        } else {
+                            $template = $t;
+                        }
+                    }
+                }
+            }
 
             if (in_array('saml20-sp-remote', $this->types, true)) {
                 $this->addMetadata($source['src'], $entity->getMetadata20SP(), 'saml20-sp-remote', $template);

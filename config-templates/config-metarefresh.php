@@ -52,11 +52,11 @@ $config = [
                         ],
                     ],
 
-		    'regex-template' => [
-			"/^https:\/\/www\.example\.com\/sp$/" => [
-			    'assertion.encryption' => false,
-			],
-		    ],
+                    'regex-template' => [
+                        "/^https:\/\/www\.example\.com\/sp$/" => [
+                            'assertion.encryption' => false,
+                        ],
+                    ],
 
                     /*
                      * The sets of entities to load, any combination of:
