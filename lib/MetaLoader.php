@@ -13,7 +13,6 @@ use SimpleSAML\Utils;
 
 /**
  * @package SimpleSAMLphp
- * @author Andreas Åkre Solberg <andreas.solberg@uninett.no>
  */
 class MetaLoader
 {
