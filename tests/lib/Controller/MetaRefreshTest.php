@@ -34,7 +34,6 @@ class MetaRefreshTest extends TestCase
 
     /**
      * Set up for each test.
-     * @return void
      */
     protected function setUp(): void
     {
@@ -88,7 +87,6 @@ class MetaRefreshTest extends TestCase
 
 
     /**
-     * @return void
      */
     public function testMetaRefresh()
     {

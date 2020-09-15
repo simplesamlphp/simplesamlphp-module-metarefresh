@@ -8,7 +8,6 @@ use Webmozart\Assert\Assert;
  * Hook to run a cron job.
  *
  * @param array &$croninfo  Output
- * @return void
  */
 function metarefresh_hook_cron(array &$croninfo): void
 {

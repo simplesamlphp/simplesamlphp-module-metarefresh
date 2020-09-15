@@ -51,7 +51,6 @@ class ARP
     /**
      * @param string $attributemap_filename
      *
-     * @return void
      */
     private function loadAttributeMap(string $attributemap_filename): void
     {

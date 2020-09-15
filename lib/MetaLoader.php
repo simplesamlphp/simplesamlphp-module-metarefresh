@@ -84,7 +84,6 @@ class MetaLoader
      *
      * @param string|array $types Either a string with the name of one single type allowed, or an array with a list of
      * types. Pass an empty array to reset to all types of entities.
-     * @return void
      */
     public function setTypes($types): void
     {
@@ -99,7 +98,6 @@ class MetaLoader
      * This function processes a SAML metadata file.
      *
      * @param array $source
-     * @return void
      */
     public function loadSource(array $source): void
     {
@@ -335,7 +333,6 @@ class MetaLoader
 
     /**
      * @param array $source
-     * @return void
      */
     private function addCachedMetadata(array $source): void
     {
@@ -358,7 +355,6 @@ class MetaLoader
      *
      * @param array $source
      * @param array|null $responseHeaders
-     * @return void
      */
     private function saveState(array $source, ?array $responseHeaders): void
     {
@@ -405,7 +401,6 @@ class MetaLoader
     /**
      * This function writes the state array back to disk
      *
-     * @return void
      */
     public function writeState(): void
     {
@@ -425,7 +420,6 @@ class MetaLoader
     /**
      * This function writes the metadata to stdout.
      *
-     * @return void
      */
     public function dumpMetadataStdOut(): void
     {
@@ -456,7 +450,6 @@ class MetaLoader
      * @param \SAML2\XML\md\AttributeAuthorityDescriptor[]|null $metadata The metadata.
      * @param string $type The metadata type.
      * @param array|null $template The template.
-     * @return void
      */
     private function addMetadata(string $filename, ?array $metadata, string $type, array $template = null): void
     {
@@ -495,7 +488,6 @@ class MetaLoader
      * This function writes the metadata to an ARP file
      *
      * @param \SimpleSAML\Configuration $config
-     * @return void
      */
     public function writeARPfile(Configuration $config): void
     {
@@ -530,7 +522,6 @@ class MetaLoader
      * This function writes the metadata to to separate files in the output directory.
      *
      * @param string $outputDir
-     * @return void
      */
     public function writeMetadataFiles(string $outputDir): void
     {
@@ -580,7 +571,6 @@ class MetaLoader
      * Save metadata for loading with the 'serialize' metadata loader.
      *
      * @param string $outputDir  The directory we should save the metadata to.
-     * @return void
      */
     public function writeMetadataSerialize(string $outputDir): void
     {
