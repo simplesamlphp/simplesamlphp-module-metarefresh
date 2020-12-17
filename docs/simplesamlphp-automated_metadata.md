@@ -26,7 +26,7 @@ Preparations
 
 You need to enable the following modules:
 
- 1. [cron](./cron:cron)
+ 1. [cron](https://simplesamlphp.org/docs/stable/cron:cron)
  2. metarefresh
 
 The cron module allows you to do tasks regularly, by setting up a cron job that calls a hook in SimpleSAMLphp.
@@ -237,7 +237,7 @@ Remember that the `type` parameter here must match the `outputFormat` in the con
 Configuring the cron module
 ---------------------------
 
-See the [cron module documentation](./cron:cron) to configure `cron`
+See the [cron module documentation](https://simplesamlphp.org/docs/stable/cron:cron) to configure `cron`
 
 Once you have invoked cron, and if this operation seems to run fine, navigate to the **SimpleSAMLphp Front page** › **Federation**. Here you will see a list of all the Identity Providers trusted. They will be listed with information about the maximum duration of their cached version, such as *(expires in 96.0 hours)*.
 
