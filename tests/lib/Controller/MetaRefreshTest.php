@@ -23,6 +23,9 @@ use Symfony\Component\HttpFoundation\Request;
 class MetaRefreshTest extends TestCase
 {
     /** @var \SimpleSAML\Configuration */
+    protected $authsources;
+
+    /** @var \SimpleSAML\Configuration */
     protected $config;
 
     /** @var \SimpleSAML\Configuration */
