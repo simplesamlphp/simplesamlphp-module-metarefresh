@@ -155,52 +155,17 @@ class MetaLoader
         }
 
         foreach ($entities as $entity) {
-            if (isset($source['blacklist'])) {
-                if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
-                    Logger::info('Skipping "' . $entity->getEntityId() . '" - blacklisted.' . "\n");
-                    continue;
-                }
+            if (!$this->processBlacklist($entity, $source)) {
+                continue;
             }
-
-            if (isset($source['whitelist'])) {
-                if (!empty($source['whitelist']) && !in_array($entity->getEntityId(), $source['whitelist'], true)) {
-                    Logger::info('Skipping "' . $entity->getEntityId() . '" - not in the whitelist.' . "\n");
-                    continue;
-                }
+            if (!$this->processWhitelist($entity, $source)) {
+                continue;
             }
-
-            /* Do we have an attribute whitelist? */
-            if (isset($source['attributewhitelist']) && !empty($source['attributewhitelist'])) {
-                $idpMetadata = $entity->getMetadata20IdP();
-                if (!isset($idpMetadata)) {
-                    /* Skip non-IdPs */
-                    continue;
-                }
-
-                /* Do a recursive comparison for each whitelist of the attributewhitelist with the idpMetadata for this
-                 * IdP. At least one of these whitelists should match */
-                $match = false;
-                foreach ($source['attributewhitelist'] as $whitelist) {
-                    if ($this->containsArray($whitelist, $idpMetadata)) {
-                        $match = true;
-                        break;
-                    }
-                }
-                if (!$match) {
-                    /* No match found -> next IdP */
-                    continue;
-                }
-                Logger::debug('Whitelisted entityID: ' . $entity->getEntityID());
+            if (!$this->processAttributeWhitelist($entity, $source)) {
+                continue;
             }
-
-            if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
-                if (!$entity->validateSignature($source['certificates'])) {
-                    $entityId = $entity->getEntityId();
-                    Logger::info(
-                        'Skipping "' . $entityId . '" - could not verify signature using certificate.' . "\n"
-                    );
-                    continue;
-                }
+            if (!$this->processCertificates($entity, $source)) {
+                continue;
             }
 
             $template = null;
@@ -228,6 +193,96 @@ class MetaLoader
         }
 
         $this->saveState($source, $responseHeaders);
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processCertificates(Metadata\SAMLParser $entity, array $source): bool
+    {
+        if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
+            if (!$entity->validateSignature($source['certificates'])) {
+                $entityId = $entity->getEntityId();
+                Logger::info(
+                    'Skipping "' . $entityId . '" - could not verify signature using certificate.' . "\n"
+                );
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processBlacklist(Metadata\SAMLParser $entity, array $source): bool
+    {
+        if (isset($source['blacklist'])) {
+            if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
+                Logger::info('Skipping "' . $entity->getEntityId() . '" - blacklisted.' . "\n");
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processWhitelist(Metadata\SAMLParser $entity, array $source): bool
+    {
+        if (isset($source['whitelist'])) {
+            if (!empty($source['whitelist']) && !in_array($entity->getEntityId(), $source['whitelist'], true)) {
+                Logger::info('Skipping "' . $entity->getEntityId() . '" - not in the whitelist.' . "\n");
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processAttributeWhitelist(Metadata\SAMLParser $entity, array $source): bool
+    {
+        /* Do we have an attribute whitelist? */
+        if (isset($source['attributewhitelist']) && !empty($source['attributewhitelist'])) {
+            $idpMetadata = $entity->getMetadata20IdP();
+            if (!isset($idpMetadata)) {
+                /* Skip non-IdPs */
+                return false;
+            }
+
+            /**
+             * Do a recursive comparison for each whitelist of the attributewhitelist with the idpMetadata for this
+             * IdP. At least one of these whitelists should match
+             */
+            $match = false;
+            foreach ($source['attributewhitelist'] as $whitelist) {
+                if ($this->containsArray($whitelist, $idpMetadata)) {
+                    $match = true;
+                    break;
+                }
+            }
+             if (!$match) {
+                /* No match found -> next IdP */
+                return false;
+            }
+            Logger::debug('Whitelisted entityID: ' . $entity->getEntityID());
+        }
+        return true;
     }
 
 
