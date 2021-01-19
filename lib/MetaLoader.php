@@ -155,11 +155,8 @@ class MetaLoader
         }
 
         foreach ($entities as $entity) {
-            if (isset($source['blacklist'])) {
-                if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
-                    Logger::info('Skipping "' . $entity->getEntityId() . '" - blacklisted.' . "\n");
-                    continue;
-                }
+            if (!$this->processBlacklist($entity, $source)) {
+                continue;
             }
 
             if (isset($source['whitelist'])) {
@@ -228,6 +225,23 @@ class MetaLoader
         }
 
         $this->saveState($source, $responseHeaders);
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processBlacklist(Metadata\SAMLParser $entity, array $source): bool
+    {
+        if (isset($source['blacklist'])) {
+            if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
+                Logger::info('Skipping "' . $entity->getEntityId() . '" - blacklisted.' . "\n");
+                return false;
+            }
+        }
+        return true;
     }
 
 
