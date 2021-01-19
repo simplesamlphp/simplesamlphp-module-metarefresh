@@ -7,25 +7,17 @@ namespace SimpleSAML\Module\metarefresh;
  */
 class ARP
 {
-    /**
-     * @var array
-     */
-    private $metadata;
+    /** @var array */
+    private array $metadata;
 
-    /**
-     * @var array
-     */
-    private $attributes = [];
+    /** @var array */
+    private array $attributes = [];
 
-    /**
-     * @var string
-     */
-    private $prefix;
+    /** @var string */
+    private string $prefix;
 
-    /**
-     * @var
-     */
-    private $suffix;
+    /** @var string */
+    private string $suffix;
 
 
     /**
@@ -55,9 +47,12 @@ class ARP
     private function loadAttributeMap(string $attributemap_filename): void
     {
         $config = \SimpleSAML\Configuration::getInstance();
+
         /** @psalm-suppress PossiblyNullOperand */
         include($config->getPathValue('attributemap', 'attributemap/') . $attributemap_filename . '.php');
+
         // Note that $attributemap is defined in the included attributemap-file!
+        /** @psalm-var array $attributemap */
         $this->attributes = $attributemap;
     }
 

@@ -17,25 +17,25 @@ use SimpleSAML\Utils;
 class MetaLoader
 {
     /** @var int|null */
-    private $expire;
+    private ?int $expire;
 
     /** @var array */
-    private $metadata = [];
+    private array $metadata = [];
 
     /** @var object|null */
-    private $oldMetadataSrc;
+    private ?object $oldMetadataSrc;
 
     /** @var string|null */
-    private $stateFile = null;
+    private ?string $stateFile = null;
 
-    /** @var bool*/
-    private $changed = false;
-
-    /** @var array */
-    private $state = [];
+    /** @var bool */
+    private bool $changed = false;
 
     /** @var array */
-    private $types = [
+    private array $state = [];
+
+    /** @var array */
+    private array $types = [
         'saml20-idp-remote',
         'saml20-sp-remote',
         'attributeauthority-remote'

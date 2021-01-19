@@ -27,13 +27,13 @@ use Symfony\Component\HttpFoundation\Request;
 class MetaRefresh
 {
     /** @var \SimpleSAML\Configuration */
-    protected $config;
+    protected Configuration $config;
 
     /** @var \SimpleSAML\Session */
-    protected $session;
+    protected Session $session;
 
     /** @var \SimpleSAML\Configuration */
-    protected $module_config;
+    protected Configuration $module_config;
 
     /**
      * @var \SimpleSAML\Utils\Auth|string
