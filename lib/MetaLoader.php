@@ -164,15 +164,8 @@ class MetaLoader
             if (!$this->processAttributeWhitelist($entity, $source)) {
                 continue;
             }
-
-            if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
-                if (!$entity->validateSignature($source['certificates'])) {
-                    $entityId = $entity->getEntityId();
-                    Logger::info(
-                        'Skipping "' . $entityId . '" - could not verify signature using certificate.' . "\n"
-                    );
-                    continue;
-                }
+            if (!$this->processCertificates($entity, $source)) {
+                continue;
             }
 
             $template = null;
@@ -200,6 +193,26 @@ class MetaLoader
         }
 
         $this->saveState($source, $responseHeaders);
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processCertificates(Metadata\SAMLParser $entity, array $source): bool
+    {
+        if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
+            if (!$entity->validateSignature($source['certificates'])) {
+                $entityId = $entity->getEntityId();
+                Logger::info(
+                    'Skipping "' . $entityId . '" - could not verify signature using certificate.' . "\n"
+                );
+                return false;
+            }
+        }
+        return true;
     }
 
 
