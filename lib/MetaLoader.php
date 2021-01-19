@@ -158,12 +158,8 @@ class MetaLoader
             if (!$this->processBlacklist($entity, $source)) {
                 continue;
             }
-
-            if (isset($source['whitelist'])) {
-                if (!empty($source['whitelist']) && !in_array($entity->getEntityId(), $source['whitelist'], true)) {
-                    Logger::info('Skipping "' . $entity->getEntityId() . '" - not in the whitelist.' . "\n");
-                    continue;
-                }
+            if (!$this->processWhitelist($entity, $source)) {
+                continue;
             }
 
             /* Do we have an attribute whitelist? */
@@ -238,6 +234,23 @@ class MetaLoader
         if (isset($source['blacklist'])) {
             if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
                 Logger::info('Skipping "' . $entity->getEntityId() . '" - blacklisted.' . "\n");
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * @param \SimpleSAML\Metadata\SAMLParser $entity
+     * @param array $source
+     * @bool
+     */
+    private function processWhitelist(Metadata\SAMLParser $entity, array $source): bool
+    {
+        if (isset($source['whitelist'])) {
+            if (!empty($source['whitelist']) && !in_array($entity->getEntityId(), $source['whitelist'], true)) {
+                Logger::info('Skipping "' . $entity->getEntityId() . '" - not in the whitelist.' . "\n");
                 return false;
             }
         }
