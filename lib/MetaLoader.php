@@ -276,7 +276,7 @@ class MetaLoader
                     break;
                 }
             }
-             if (!$match) {
+            if (!$match) {
                 /* No match found -> next IdP */
                 return false;
             }
