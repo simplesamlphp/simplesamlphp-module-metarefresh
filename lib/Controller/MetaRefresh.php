@@ -36,10 +36,9 @@ class MetaRefresh
     protected Configuration $module_config;
 
     /**
-     * @var \SimpleSAML\Utils\Auth|string
-     * @psalm-var \SimpleSAML\Utils\Auth|class-string
+     * @var \SimpleSAML\Utils\Auth
      */
-    protected $authUtils = Utils\Auth::class;
+    protected $authUtils;
 
 
     /**
@@ -88,7 +87,7 @@ class MetaRefresh
      */
     public function main(): Template
     {
-        $this->authUtils::requireAdmin();
+        $this->authUtils->requireAdmin();
 
         Logger::setCaptureLog(true);
         $sets = $this->module_config->getArray('sets', []);
@@ -148,7 +147,8 @@ class MetaRefresh
                 }
 
                 $outputDir = $set->getString('outputDir');
-                $outputDir = Utils\System::resolvePath($outputDir);
+                $sysUtils = new Utils\System();
+                $outputDir = $sysUtils->resolvePath($outputDir);
 
                 $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize'], 'flatfile');
                 switch ($outputFormat) {
