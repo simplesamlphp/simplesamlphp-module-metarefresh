@@ -76,7 +76,7 @@ foreach ($argv as $a) {
     switch ($a) {
         case '--certificate':
             if ($v === null || strlen($v) === 0) {
-                echo 'The --certficate option requires an parameter.' . "\n";
+                echo 'The --certficate option requires a parameter.' . "\n";
                 echo 'Please run `' . $progName . ' --help` for usage information.' . "\n";
                 exit(1);
             }
@@ -87,7 +87,7 @@ foreach ($argv as $a) {
             exit(0);
         case '--out-dir':
             if ($v === null || strlen($v) === 0) {
-                echo 'The --out-dir option requires an parameter.' . "\n";
+                echo 'The --out-dir option requires a parameter.' . "\n";
                 echo 'Please run `' . $progName . ' --help` for usage information.' . "\n";
                 exit(1);
             }
@@ -135,7 +135,7 @@ function printHelp(): void
     /*   '======================================================================' */
     echo 'Usage: ' . $progName . ' [options] [files]' . "\n";
     echo "\n";
-    echo 'This program parses a SAML metadata files and output pieces that can' . "\n";
+    echo 'This program parses SAML metadata files and outputs configuration that can' . "\n";
     echo 'be added to the metadata files in metadata/.' . "\n";
     echo "\n";
     echo 'Options:' . "\n";
