@@ -29,11 +29,11 @@
     "require": {
         "php": ">=7.4 || ^8.0",
         "simplesamlphp/composer-module-installer": "~1.1",
-        "simplesamlphp/simplesamlphp": "dev-master",
-        "simplesamlphp/assert": "~0.2.6"
+        "simplesamlphp/simplesamlphp": "^2.0.0-beta.2",
+        "simplesamlphp/assert": "~0.2.7"
     },
     "require-dev": {
-        "simplesamlphp/simplesamlphp-test-framework": "^1.1.0"
+        "simplesamlphp/simplesamlphp-test-framework": "^1.1.4"
     },
     "support": {
         "issues": "https://github.com/simplesamlphp/simplesamlphp-module-metarefresh/issues",
