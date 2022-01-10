@@ -53,7 +53,7 @@ $config = [
                     ],
 
                     'regex-template' => [
-                        "/^https:\/\/www\.example\.com\/sp$/" => [
+                        "#^https://www\.example\.com/sp$#" => [
                             'assertion.encryption' => false,
                         ],
                     ],
