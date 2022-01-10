@@ -11,7 +11,7 @@ use SimpleSAML\XHTML\Template;
  *
  * @param \SimpleSAML\XHTML\Template &$template The template that we should alter in this hook.
  */
-function metarefresh_hook_configpage(Template &$template)
+function metarefresh_hook_configpage(Template &$template): void
 {
     $template->data['links'][] = [
         'href' => Module::getModuleURL('metarefresh/fetch.php'),
