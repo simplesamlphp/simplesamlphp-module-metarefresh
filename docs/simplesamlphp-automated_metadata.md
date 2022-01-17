@@ -1,13 +1,6 @@
 Automated Metadata Management
 =============================
 
-<!-- 
-	This file is written in Markdown syntax. 
-	For more information about how to use the Markdown syntax, read here:
-	http://daringfireball.net/projects/markdown/syntax
--->
-
-
 <!-- {{TOC}} -->
 
 Introduction
@@ -33,12 +26,20 @@ The cron module allows you to do tasks regularly, by setting up a cron job that 
 
 The metarefresh module will download and parse the metadata document and store it in metadata files cached locally.
 
-First, you will need to copy the `config-templates` files of the two modules above into the global `config/` directory.
+In `config.php`, search for the `module.enable` key and set `cron` and `metarefresh` to true:
+
+```
+    'module.enable' => [
+         'cron' => true,
+         'metarefresh' => true,
+         …
+    ],
+```
+
+Then, you will need to copy the `config-templates` files of the two modules above into the global `config/` directory.
 
 	[root@simplesamlphp] cd /var/simplesamlphp
-	[root@simplesamlphp simplesamlphp] touch modules/cron/enable
 	[root@simplesamlphp simplesamlphp] cp modules/cron/config-templates/*.php config/
-	[root@simplesamlphp simplesamlphp] touch modules/metarefresh/enable
 	[root@simplesamlphp simplesamlphp] cp modules/metarefresh/config-templates/*.php config/
 
 
