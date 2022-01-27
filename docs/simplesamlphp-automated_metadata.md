@@ -157,8 +157,8 @@ The metarefresh module supports the following configuration options:
 :   The maximum number of seconds a metadata entry will be valid.
 
 `outputDir`
-:   The directory where the generated metadata will be stored. The path
-    is relative to the SimpleSAMLphp base directory.
+:   The directory where the generated metadata will be stored. Non-absolute paths
+    will be relative to the SimpleSAMLphp base directory.
 
 `outputFormat`
 :   The format of the generated metadata files. This must match the

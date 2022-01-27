@@ -25,7 +25,8 @@ $configdir = \SimpleSAML\Utils\Config::getConfigDir();
 \SimpleSAML\Configuration::setConfigDir($configdir);
 
 // $outputDir contains the directory we will store the generated metadata in
-$outputDir = $baseDir . '/metadata-generated';
+$sysUtils = new \SimpleSAML\Utils\System();
+$outputDir = $sysUtils->resolvePath('metadata-generated');
 
 /* $toStdOut is a boolean telling us wheter we will print the output to stdout instead
  * of writing it to files in $outputDir.
@@ -91,7 +92,7 @@ foreach ($argv as $a) {
                 echo 'Please run `' . $progName . ' --help` for usage information.' . "\n";
                 exit(1);
             }
-            $outputDir = $baseDir . ($v[0] == '/' ? $v : '/' . $v);
+            $outputDir = $sysUtils->resolvePath($v);
             break;
         case '--stdout':
             $toStdOut = true;
@@ -148,7 +149,7 @@ function printHelp(): void
     echo ' -h, --help                   Print this help.' . "\n";
     echo ' -o=<DIR>, --out-dir=<DIR>    Write the output to this directory. The' . "\n";
     echo '                              default directory is metadata-generated/.' . "\n";
-    echo '                              Path will be relative to the SimpleSAMLphp' . "\n";
+    echo '                              Non-absolute paths will be relative to the SimpleSAMLphp' . "\n";
     echo '                              base directory.' . "\n";
     echo ' -s, --stdout                 Write the output to stdout instead of' . "\n";
     echo '                              separate files in the output directory.' . "\n";
