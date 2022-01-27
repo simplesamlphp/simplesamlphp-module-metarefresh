@@ -118,7 +118,7 @@ class MetaLoader
             // We have response headers, so the request succeeded
             if (!isset($responseHeaders)) {
                 // No response headers, this means the request failed in some way, so re-use old data
-                Logger::debug('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
+                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
             } elseif (preg_match('@^HTTP/1\.[01]\s304\s@', $responseHeaders[0])) {
@@ -128,7 +128,7 @@ class MetaLoader
                 return;
             } elseif (!preg_match('@^HTTP/1\.[01]\s200\s@', $responseHeaders[0])) {
                 // Other error
-                Logger::debug('Error from ' . $source['src'] . ' - attempting to re-use cached metadata');
+                Logger::info('Error from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
             }
@@ -147,7 +147,7 @@ class MetaLoader
         try {
             $entities = $this->loadXML($data, $source);
         } catch (Exception $e) {
-            Logger::debug(
+            Logger::notice(
                 'XML parser error when parsing ' . $source['src'] . ' - attempting to re-use cached metadata'
             );
             Logger::debug('XML parser returned: ' . $e->getMessage());
@@ -219,7 +219,7 @@ class MetaLoader
         if (array_key_exists('certificates', $source) && ($source['certificates'] !== null)) {
             if (!$entity->validateSignature($source['certificates'])) {
                 $entityId = $entity->getEntityId();
-                Logger::info(
+                Logger::notice(
                     'Skipping "' . $entityId . '" - could not verify signature using certificate.' . "\n"
                 );
                 return false;
