@@ -5,7 +5,6 @@
  * This script can be used to generate metadata for SimpleSAMLphp
  * based on an XML metadata file.
  */
-use RobRichards\XMLSecLibs\XMLSecurityDSig;
 
 // This is the base directory of the SimpleSAMLphp installation
 $baseDir = dirname(dirname(dirname(dirname(__FILE__))));
@@ -15,8 +14,7 @@ require_once($baseDir . '/lib/_autoload.php');
 
 if (!\SimpleSAML\Module::isModuleEnabled('metarefresh')) {
     echo "You need to enable the metarefresh module before this script can be used.\n";
-    echo "You can enable it by running the following command:\n";
-    echo '  echo >"' . $baseDir . '/modules/metarefresh/enable' . "\"\n";
+    echo "You can enable it by searching for the `module.enable` key in `config.php` and set `metarefresh` to true.\n";
     exit(1);
 }
 
