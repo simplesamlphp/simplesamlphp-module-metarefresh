@@ -57,6 +57,8 @@ class MetaRefresh
     ) {
         $this->config = $config;
         $this->session = $session;
+        $this->module_config = Configuration::getConfig('config-metarefresh.php');
+        $this->authUtils = new Utils\Auth();
     }
 
 

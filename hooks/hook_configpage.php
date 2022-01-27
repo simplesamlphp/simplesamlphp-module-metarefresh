@@ -14,7 +14,7 @@ use SimpleSAML\XHTML\Template;
 function metarefresh_hook_configpage(Template &$template): void
 {
     $template->data['links'][] = [
-        'href' => Module::getModuleURL('metarefresh/fetch.php'),
+        'href' => Module::getModuleURL('metarefresh/'),
         'text' => Translate::noop('Metarefresh'),
     ];
 
