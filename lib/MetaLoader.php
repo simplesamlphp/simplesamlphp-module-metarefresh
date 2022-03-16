@@ -376,8 +376,8 @@ class MetaLoader
     private function createContext(array $source): array
     {
         $config = Configuration::getInstance();
-        $name = $config->getString('technicalcontact_name', null);
-        $mail = $config->getString('technicalcontact_email', null);
+        $name = $config->getOptionalString('technicalcontact_name', null);
+        $mail = $config->getOptionalString('technicalcontact_email', null);
 
         $rawheader = "User-Agent: SimpleSAMLphp metarefresh, run by $name <$mail>\r\n";
 
@@ -560,7 +560,7 @@ class MetaLoader
      */
     public function writeARPfile(Configuration $config): void
     {
-        $arpfile = $config->getValue('arpfile');
+        $arpfile = $config->getString('arpfile');
         $types = ['saml20-sp-remote'];
 
         $md = [];
@@ -574,9 +574,9 @@ class MetaLoader
         // $metadata, $attributemap, $prefix, $suffix
         $arp = new ARP(
             $md,
-            $config->getValue('attributemap', ''),
-            $config->getValue('prefix', ''),
-            $config->getValue('suffix', '')
+            $config->getOptionalString('attributemap', ''),
+            $config->getOptionalString('prefix', ''),
+            $config->getOptionalString('suffix', '')
         );
 
 

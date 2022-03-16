@@ -92,7 +92,7 @@ class MetaRefresh
         $this->authUtils->requireAdmin();
 
         Logger::setCaptureLog(true);
-        $sets = $this->module_config->getArray('sets', []);
+        $sets = $this->module_config->getArray('sets');
 
         foreach ($sets as $setkey => $set) {
             $set = Configuration::loadFromArray($set);
@@ -109,8 +109,8 @@ class MetaRefresh
                 $metaloader = new MetaLoader($expire);
 
                 // Get global black/whitelists
-                $blacklist = $this->module_config->getArray('blacklist', []);
-                $whitelist = $this->module_config->getArray('whitelist', []);
+                $blacklist = $this->module_config->getOptionalArray('blacklist', []);
+                $whitelist = $this->module_config->getOptionalArray('whitelist', []);
 
                 // get global type filters
                 $available_types = [
@@ -118,7 +118,7 @@ class MetaRefresh
                     'saml20-sp-remote',
                     'attributeauthority-remote'
                 ];
-                $set_types = $set->getArrayize('types', $available_types);
+                $set_types = $set->getOptionalArray('types', $available_types);
 
                 foreach ($set->getArray('sources') as $source) {
                     // filter metadata by type of entity

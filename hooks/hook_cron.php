@@ -20,7 +20,7 @@ function metarefresh_hook_cron(array &$croninfo): void
         $config = Configuration::getInstance();
         $mconfig = Configuration::getOptionalConfig('config-metarefresh.php');
 
-        $sets = $mconfig->getArray('sets', []);
+        $sets = $mconfig->getArray('sets');
         /** @var string $datadir */
         $datadir = $config->getPathValue('datadir', 'data/');
         $stateFile = $datadir . 'metarefresh-state.php';
@@ -59,10 +59,10 @@ function metarefresh_hook_cron(array &$croninfo): void
             $metaloader = new \SimpleSAML\Module\metarefresh\MetaLoader($expire, $stateFile, $oldMetadataSrc);
 
             // Get global blacklist, whitelist, attributewhitelist and caching info
-            $blacklist = $mconfig->getArray('blacklist', []);
-            $whitelist = $mconfig->getArray('whitelist', []);
-            $attributewhitelist = $mconfig->getArray('attributewhitelist', []);
-            $conditionalGET = $mconfig->getBoolean('conditionalGET', false);
+            $blacklist = $mconfig->getOptionalArray('blacklist', []);
+            $whitelist = $mconfig->getOptionalArray('whitelist', []);
+            $attributewhitelist = $mconfig->getOptionalArray('attributewhitelist', []);
+            $conditionalGET = $mconfig->getOptionalBoolean('conditionalGET', false);
 
             // get global type filters
             $available_types = [
