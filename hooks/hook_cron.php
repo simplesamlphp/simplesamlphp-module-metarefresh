@@ -18,7 +18,7 @@ function metarefresh_hook_cron(array &$croninfo): void
 
     try {
         $config = Configuration::getInstance();
-        $mconfig = Configuration::getOptionalConfig('config-metarefresh.php');
+        $mconfig = Configuration::getOptionalConfig('module_metarefresh.php');
 
         $sets = $mconfig->getArray('sets');
         /** @var string $datadir */

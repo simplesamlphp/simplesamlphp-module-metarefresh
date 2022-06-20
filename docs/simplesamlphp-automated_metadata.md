@@ -65,7 +65,7 @@ Configuring the metarefresh module
 Now we are going to proceed to configure the metarefresh module. First, edit the appropriate configuration file:
 
 
-	[root@simplesamlphp simplesamlphp]# vi config/config-metarefresh.php
+	[root@simplesamlphp simplesamlphp]# vi config/module_metarefresh.php
 
 Here's an example of a possible configuration for both the Kalmar Federation and UK Access Management Federation:
 
