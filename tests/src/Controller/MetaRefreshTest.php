@@ -86,7 +86,7 @@ class MetaRefreshTest extends TestCase
         };
 
         Configuration::setPreLoadedConfig($this->config, 'config.php');
-        Configuration::setPreLoadedConfig($this->module_config, 'module_metarefresh.php');
+        Configuration::setPreLoadedConfig($this->module_config, 'config-metarefresh.php');
     }
 
 
