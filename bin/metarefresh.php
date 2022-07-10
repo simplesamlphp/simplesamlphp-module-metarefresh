@@ -26,7 +26,7 @@ $configdir = \SimpleSAML\Utils\Config::getConfigDir();
 $sysUtils = new \SimpleSAML\Utils\System();
 $outputDir = $sysUtils->resolvePath('metadata-generated');
 
-/* $toStdOut is a boolean telling us wheter we will print the output to stdout instead
+/* $toStdOut is a boolean telling us whether we will print the output to stdout instead
  * of writing it to files in $outputDir.
  */
 $toStdOut = false;

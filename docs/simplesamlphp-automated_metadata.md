@@ -248,7 +248,7 @@ See the [cron module documentation](https://simplesamlphp.org/docs/stable/cron:c
 
 Once you have invoked cron, and if this operation seems to run fine, navigate to the **SimpleSAMLphp Front page** › **Federation**. Here you will see a list of all the Identity Providers trusted. They will be listed with information about the maximum duration of their cached version, such as *(expires in 96.0 hours)*.
 
-You *may* need to adjust the below php.ini setings if the metadata files you consume are quite large.
+You *may* need to adjust the below php.ini settings if the metadata files you consume are quite large.
 
 * `memory_limit`
 * `max_execution_time`
