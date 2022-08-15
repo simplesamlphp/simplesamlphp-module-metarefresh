@@ -112,5 +112,10 @@ class MetaRefreshTest extends TestCase
         $response = $c->main($request);
 
         $this->assertTrue($response->isSuccessful());
+
+        $contents = $response->getContents();
+        $this->assertStringContainsString('[metarefresh]: Executing set [example]', $contents);
+        $this->assertStringContainsString('In set [example] loading source', $contents);
+        $this->assertStringContainsString('attempting to re-use cached metadata', $contents);
     }
 }
