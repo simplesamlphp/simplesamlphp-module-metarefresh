@@ -103,9 +103,8 @@ class MetaRefreshTest extends TestCase
             '/',
             'GET'
         );
-        $session = Session::getSessionFromRequest();
 
-        $c = new Controller\MetaRefresh($this->config, $session);
+        $c = new Controller\MetaRefresh($this->config);
         $c->setAuthUtils($this->authUtils);
         $c->setModuleConfig($this->module_config);
 
