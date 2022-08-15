@@ -205,6 +205,7 @@ class MetaLoader
             }
         }
 
+        Logger::debug(sprintf('Found %d entities', count($entities)));
         $this->saveState($source, $responseHeaders);
     }
 
@@ -398,19 +399,22 @@ class MetaLoader
         return ['http' => ['header' => $rawheader]];
     }
 
-
-    /**
-     * @param array $source
-     */
     private function addCachedMetadata(array $source): void
     {
-        if (isset($this->oldMetadataSrc)) {
-            foreach ($this->types as $type) {
-                foreach ($this->oldMetadataSrc->getMetadataSet($type) as $entity) {
-                    if (array_key_exists('metarefresh:src', $entity)) {
-                        if ($entity['metarefresh:src'] == $source['src']) {
-                            $this->addMetadata($source['src'], $entity, $type);
-                        }
+        if (!isset($this->oldMetadataSrc)) {
+            Logger::info('No oldMetadataSrc, cannot re-use cached metadata');
+            return;
+        }
+
+        foreach ($this->types as $type) {
+            foreach ($this->oldMetadataSrc->getMetadataSet($type) as $entity) {
+                if (array_key_exists('metarefresh:src', $entity)) {
+                    if ($entity['metarefresh:src'] == $source['src']) {
+                        Logger::debug(sprintf('Adding cached meatadata for %s, %s',
+                            $source['src'],
+                            $type
+                        ));
+                        $this->addMetadata($source['src'], $entity, $type);
                     }
                 }
             }
