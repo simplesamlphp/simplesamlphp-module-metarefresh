@@ -166,7 +166,6 @@ The metarefresh module supports the following configuration options:
 `types`
 :   The sets of entities to load. An array containing strings identifying the different types of entities that will be
     loaded. Valid types are:
-
     * saml20-idp-remote
     * saml20-sp-remote
     * attributeauthority-remote
@@ -213,10 +212,10 @@ Each metadata source has the following options:
     patterns in their metadata. Only data from identity providers that match at least one element of the top-level array
     will be processed and written to disk.   
     Matching of such a top-level element, itself being a (multi-level) array, means that at each level (recursively) the
-    key and value match with the identity provider's metadata. Scalar keys and values are matched using PCRE.   
+    key and value match with the identity provider's metadata. Scalar keys and values are matched using PCRE.
     A typical use-case is to accept only identity providers from eduGAIN that match a combination of specific
-    EntityAttributes, such as the https://refeds.org/sirtfi assurance-certification *and*
-    http://refeds.org/category/research-and-scholarship entity-category.   
+    EntityAttributes, such as the `https://refeds.org/sirtfi` assurance-certification *and*
+    `http://refeds.org/category/research-and-scholarship` entity-category.
     Another example is filtering identity providers from a specific federation, by filtering on specific values of the
     registrationAuthority inside the RegistrationInfo.
 
@@ -229,7 +228,7 @@ chown www-data /var/simplesamlphp/metadata/metarefresh-ukaccess/
 ```
 
 Now you can configure SimpleSAMLphp to use the metadata fetched by metarefresh. Edit the main
-config.php file, and modify the `metadata.sources` directive accordingly: 
+config.php file, and modify the `metadata.sources` directive accordingly:
 
 ```php
 'metadata.sources' => [
