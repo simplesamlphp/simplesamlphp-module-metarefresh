@@ -55,7 +55,7 @@ class MetaRefresh
 
             Logger::info('[metarefresh]: Executing set [' . $setkey . ']');
 
-            $expireAfter = $set->getInteger('expireAfter', null);
+            $expireAfter = $set->getOptionalInteger('expireAfter', null);
             if ($expireAfter !== null) {
                 $expire = time() + $expireAfter;
             } else {
