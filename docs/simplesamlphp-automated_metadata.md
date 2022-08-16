@@ -165,11 +165,7 @@ The metarefresh module supports the following configuration options:
 
 `types`
 :   The sets of entities to load. An array containing strings identifying the different types of entities that will be
-    loaded. Valid types are:
-    * saml20-idp-remote
-    * saml20-sp-remote
-    * attributeauthority-remote
-
+    loaded. Valid types are: `saml20-idp-remote`, `saml20-sp-remote`, `attributeauthority-remote`.
     All entity types will be loaded by default.
 
 Each metadata source has the following options:
@@ -210,7 +206,7 @@ Each metadata source has the following options:
 `attributewhitelist`
 :   This is a multilevel array for selectively refreshing a list of identity providers based on specific attributes
     patterns in their metadata. Only data from identity providers that match at least one element of the top-level array
-    will be processed and written to disk.   
+    will be processed and written to disk.
     Matching of such a top-level element, itself being a (multi-level) array, means that at each level (recursively) the
     key and value match with the identity provider's metadata. Scalar keys and values are matched using PCRE.
     A typical use-case is to accept only identity providers from eduGAIN that match a combination of specific
