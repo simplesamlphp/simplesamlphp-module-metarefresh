@@ -49,7 +49,7 @@ class MetaRefresh
             // Only process sets where cron matches the current cron tag
             $cronTags = $set->getArray('cron');
             if ($crontag !== null && !in_array($crontag, $cronTags, true)) {
-                Logger::debug('[metarefresh]: Skipping set [' . $setkey . '], not allowed for cron tag ' . $tag);
+                Logger::debug('[metarefresh]: Skipping set [' . $setkey . '], not allowed for cron tag ' . $crontag);
                 continue;
             }
 
