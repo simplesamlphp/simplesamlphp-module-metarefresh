@@ -410,11 +410,6 @@ class MetaLoader
             foreach ($this->oldMetadataSrc->getMetadataSet($type) as $entity) {
                 if (array_key_exists('metarefresh:src', $entity)) {
                     if ($entity['metarefresh:src'] == $source['src']) {
-                        Logger::debug(sprintf(
-                            'Adding cached meatadata for %s, %s',
-                            $source['src'],
-                            $type
-                        ));
                         $this->addMetadata($source['src'], $entity, $type);
                     }
                 }
