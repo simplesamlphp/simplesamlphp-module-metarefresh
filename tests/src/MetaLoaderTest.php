@@ -140,6 +140,28 @@ class MetaLoaderTest extends TestCase
         );
     }
 
+    /**
+     * Tests that setting an explicit expiry time will be added to the resulting
+     * metadata when the original metadata lacks one.
+     */
+    public function testMetaLoaderSetExpiryWhenNotPresent(): void
+    {
+        $metaloader = new \SimpleSAML\Module\metarefresh\MetaLoader(1000);
+
+        $metaloader->loadSource($this->source);
+        $metaloader->dumpMetadataStdOut();
+
+        $output = $this->getActualOutput();
+        try {
+            eval($output);
+        } catch (\Exception $e) {
+            $this->fail('Metarefresh does not produce syntactially valid code');
+        }
+        $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
+        $this->assertArrayHasKey('expire', $metadata['https://idp.example.com/idp/shibboleth']);
+        $this->assertEquals(1000, $metadata['https://idp.example.com/idp/shibboleth']['expire']);
+    }
+
     /*
      * Test two matching EntityAttributes (R&S + Sirtfi)
      */
