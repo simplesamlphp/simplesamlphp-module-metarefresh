@@ -656,35 +656,6 @@ class MetaLoader
                 $metaHandler->saveMetadata($entityId, $set, $m['metadata']);
             }
         }
-
-        // Then we delete old entries which should no longer exist
-        $ct = time();
-        foreach ($metaHandler->getMetadataSets() as $set) {
-            foreach ($metaHandler->getMetadataSet($set) as $entityId => $metadata) {
-                if (!array_key_exists('expire', $metadata) || !is_int($metadata['expire'])) {
-                    Logger::warning(
-                        'metarefresh: Metadata entry without valid expire timestamp: ' . var_export($entityId, true) .
-                        ' in set ' . var_export($set, true) . '.'
-                    );
-                    continue;
-                }
-
-                $expire = $metadata['expire'];
-                if ($expire > $ct) {
-                    continue;
-                }
-
-                /** @var int $stamp */
-                $stamp = date('l jS \of F Y h:i:s A', $expire);
-                Logger::debug('metarefresh: ' . $entityId . ' expired ' . $stamp);
-                Logger::debug(
-                    'metarefresh: Delete expired metadata entry ' .
-                    var_export($entityId, true) . ' in set ' . var_export($set, true) .
-                    '. (' . ($ct - $expire) . ' sec)'
-                );
-                $metaHandler->deleteMetadata($entityId, $set);
-            }
-        }
     }
 
 
