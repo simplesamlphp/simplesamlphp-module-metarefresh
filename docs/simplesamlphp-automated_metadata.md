@@ -18,8 +18,13 @@ You need to enable the following modules:
  2. metarefresh
 
 The cron module allows you to do tasks regularly, by setting up a cron job that calls a hook in SimpleSAMLphp.
+It is shipped with the SimpleSAMLphp core.
 
-The metarefresh module will download and parse the metadata document and store it in metadata files cached locally.
+The metarefresh module will download and parse the metadata document and store it in metadata files cached locally
+and needs to be installed separately:
+```bash
+composer require simplesamlphp/simplesamlphp-module-metarefresh
+```
 
 In `config.php`, search for the `module.enable` key and set `cron` and `metarefresh` to true:
 
