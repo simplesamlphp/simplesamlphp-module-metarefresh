@@ -22,6 +22,7 @@ It is shipped with the SimpleSAMLphp core.
 
 The metarefresh module will download and parse the metadata document and store it in metadata files cached locally
 and needs to be installed separately:
+
 ```bash
 composer require simplesamlphp/simplesamlphp-module-metarefresh
 ```
