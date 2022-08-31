@@ -14,7 +14,7 @@ The present document explains how to setup automated downloading and parsing of 
 
 You need to enable the following modules:
 
- 1. [cron](https://simplesamlphp.org/docs/stable/cron:cron)
+ 1. [cron](https://simplesamlphp.org/docs/stable/cron/cron.html)
  2. metarefresh
 
 The cron module allows you to do tasks regularly, by setting up a cron job that calls a hook in SimpleSAMLphp.
