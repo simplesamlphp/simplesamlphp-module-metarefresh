@@ -58,6 +58,15 @@ cd modules/metarefresh/bin
 ./metarefresh.php -s http://metadata.aai.switch.ch/metadata.aaitest.xml
 ```
 
+### Note
+
+If you have the SimpleSAMLphp configuration-directory in a non-default place, remember to set the
+`SIMPLESAMLPHP_CONFIG_DIR` environment-variable to point to this directory _before_ running the commands above.
+
+```sh
+export SIMPLESAMLPHP_CONFIG_DIR='/custom/config/location'
+```
+
 The `-s` option sends the output to the console (for testing purposes). If the
 output makes sense, continue. If you get a lot of error messages, try to read
 them and fix the problems that might be causing them. If you are having
