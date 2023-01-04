@@ -81,7 +81,7 @@ class MetaLoaderTest extends TestCase
         Configuration::setPreLoadedConfig($this->config, 'config.php');
         $this->metaloader = new \SimpleSAML\Module\metarefresh\MetaLoader();
         /* cannot use dirname() in declaration */
-        $this->source['src'] = dirname(dirname(__FILE__)) . '/testmetadata.xml';
+        $this->source['src'] = dirname(__FILE__, 2) . '/testmetadata.xml';
     }
 
     protected function tearDown(): void
@@ -118,7 +118,7 @@ class MetaLoaderTest extends TestCase
     public function testSignatureVerificationCertificatePass(): void
     {
         $this->metaloader->loadSource(
-            array_merge($this->source, ['certificates' => [dirname(dirname(__FILE__)) . '/mdx.pem']])
+            array_merge($this->source, ['certificates' => [dirname(__FILE__, 2) . '/mdx.pem']])
         );
         $this->metaloader->dumpMetadataStdOut();
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
