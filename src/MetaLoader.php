@@ -509,18 +509,7 @@ class MetaLoader
             echo "\n";
         }
     }
-
-
-    /**
-     * This function adds metadata from the specified file to the list of metadata.
-     * This function will return without making any changes if $metadata is NULL.
-     *
-     * @param string $filename The filename the metadata comes from.
-     * @param \SAML2\XML\md\AttributeAuthorityDescriptor[]|null $metadata The metadata.
-     * @param string $type The metadata type.
-     * @param array|null $template The template.
-     */
-    private function addMetadata(string $filename, ?array $metadata, string $type, array $template = null): void
+    private function addMetaData($filename, $metadata, $type, array $template = null)
     {
         if ($metadata === null) {
             return;
@@ -531,25 +520,51 @@ class MetaLoader
         }
 
         $metadata['metarefresh:src'] = $filename;
+        $entityId = $metadata['entityid'];
         if (!array_key_exists($type, $this->metadata)) {
             $this->metadata[$type] = [];
         }
 
-        // If expire is defined in constructor...
-        if (!empty($this->expire)) {
-            // If expire is already in metadata
-            if (array_key_exists('expire', $metadata)) {
-                // Override metadata expire with more restrictive global config
-                if ($this->expire < $metadata['expire']) {
+        // If metadata with the same entity ID already exists, merge the keys arrays
+        $existingMetadataIndex = $this->findMetadataIndexByEntityId($entityId);
+        if ($existingMetadataIndex !== false) {
+            $existingMetadata = $this->metadata[$type][$existingMetadataIndex]['metadata'];
+            $existingKeys = $existingMetadata['keys'];
+            $newKeys = $metadata['keys'];
+            $mergedKeys = array_merge($existingKeys, $newKeys);
+            $metadata['keys'] = $mergedKeys;
+
+            // Replace the existing metadata with the merged metadata
+            $this->metadata[$type][$existingMetadataIndex] = ['filename' => $filename, 'metadata' => $metadata];
+        } else {
+            // If expire is defined in constructor...
+            if (!empty($this->expire)) {
+                // If expire is already in metadata
+                if (array_key_exists('expire', $metadata)) {
+                    // Override metadata expire with more restrictive global config
+                    if ($this->expire < $metadata['expire']) {
+                        $metadata['expire'] = $this->expire;
+                    }
+
+                    // If expire is not already in metadata use global config
+                } else {
                     $metadata['expire'] = $this->expire;
                 }
+            }
+            $this->metadata[$type][] = ['filename' => $filename, 'metadata' => $metadata];
+        }
+    }
 
-                // If expire is not already in metadata use global config
-            } else {
-                $metadata['expire'] = $this->expire;
+    private function findMetadataIndexByEntityId($entityId)
+    {
+        foreach ($this->metadata as $type => $metadataList) {
+            foreach ($metadataList as $index => $metadata) {
+                if ($metadata['metadata']['entityid'] === $entityId) {
+                    return $index;
+                }
             }
         }
-        $this->metadata[$type][] = ['filename' => $filename, 'metadata' => $metadata];
+        return false;
     }
 
 
