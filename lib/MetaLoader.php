@@ -660,6 +660,28 @@ class MetaLoader
 
 
     /**
+     * This function uses the `PDO` metadata handler to upsert metadata in database.
+     * 
+     * @param array $config An associative array with the configuration for `PDO` handler.
+     *  
+     * @return void
+     */
+    public function writeMetadataPdo(array $config = []): void
+    {
+        $metaHandler = new Metadata\MetaDataStorageHandlerPdo($config);
+
+        foreach ($this->metadata as $set => $elements) {
+            foreach ($elements as $m) {
+                $entityId = $m['metadata']['entityid'];
+
+                Logger::debug("PDO Metarefresh: Upsert metadata entry `{$entityId}` in set `{$set}`.");
+                $metaHandler->addEntry($entityId, $set, $m['metadata']);
+            }
+        }
+    }
+
+
+    /**
      * @return string
      */
     private function getTime()

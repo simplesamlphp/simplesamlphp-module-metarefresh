@@ -74,13 +74,16 @@ foreach ($sets as $setkey => $set) {
         $outputDir = $set->getString('outputDir');
         $outputDir = $config->resolvePath($outputDir);
 
-        $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize'], 'flatfile');
+        $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize', 'pdo'], 'flatfile');
         switch ($outputFormat) {
             case 'flatfile':
                 $metaloader->writeMetadataFiles($outputDir);
                 break;
             case 'serialize':
                 $metaloader->writeMetadataSerialize($outputDir);
+                break;
+            case 'pdo':
+                $metaloader->writeMetadataPdo();
                 break;
         }
     } catch (\Exception $e) {
