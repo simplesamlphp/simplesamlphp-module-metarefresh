@@ -649,11 +649,35 @@ class MetaLoader
             foreach ($elements as $m) {
                 $entityId = $m['metadata']['entityid'];
 
-                Logger::debug(
-                    'metarefresh: Add metadata entry ' .
-                    var_export($entityId, true) . ' in set ' . var_export($set, true) . '.'
-                );
+                Logger::debug(sprintf(
+                    'metarefresh: Add metadata entry %s in set %s.',
+                    var_export($entityId, true),
+                    var_export($set, true),
+                ));
                 $metaHandler->saveMetadata($entityId, $set, $m['metadata']);
+            }
+        }
+    }
+
+
+    /**
+     * This function uses the `PDO` metadata handler to upsert metadata in database.
+     * 
+     * @param \SimpleSAML\Configuration $globalConfig
+     * @param array $config An associative array with the configuration for `PDO` handler.
+     * 
+     * @return void
+     */
+    public function writeMetadataPdo(Configuration $globalConfig, array $config = []): void
+    {
+        $metaHandler = new Metadata\MetaDataStorageHandlerPdo($globalConfig, $config);
+
+        foreach ($this->metadata as $set => $elements) {
+            foreach ($elements as $m) {
+                $entityId = $m['metadata']['entityid'];
+
+                Logger::debug("PDO Metarefresh: Upsert metadata entry `{$entityId}` in set `{$set}`.");
+                $metaHandler->addEntry($entityId, $set, $m['metadata']);
             }
         }
     }
