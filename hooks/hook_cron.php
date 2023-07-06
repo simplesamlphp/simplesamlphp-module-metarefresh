@@ -47,7 +47,7 @@ function metarefresh_hook_cron(&$croninfo)
                 throw new \Exception("Invalid outputDir specified.");
             }
 
-            $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize'], 'flatfile');
+            $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize', 'pdo'], 'flatfile');
 
             $oldMetadataSrc = \SimpleSAML\Metadata\MetaDataStorageSource::getSource([
                 'type' => $outputFormat,
@@ -119,6 +119,9 @@ function metarefresh_hook_cron(&$croninfo)
                     break;
                 case 'serialize':
                     $metaloader->writeMetadataSerialize($outputDir);
+                    break;
+                case 'pdo':
+                    $metaloader->writeMetadataPdo();
                     break;
             }
 
