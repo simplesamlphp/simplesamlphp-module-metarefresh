@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SimpleSAML\Module\metarefresh;
 
 use Exception;
@@ -661,10 +663,10 @@ class MetaLoader
 
     /**
      * This function uses the `PDO` metadata handler to upsert metadata in database.
-     * 
+     *
      * @param \SimpleSAML\Configuration $globalConfig
      * @param array $config An associative array with the configuration for `PDO` handler.
-     * 
+     *
      * @return void
      */
     public function writeMetadataPdo(Configuration $globalConfig, array $config = []): void

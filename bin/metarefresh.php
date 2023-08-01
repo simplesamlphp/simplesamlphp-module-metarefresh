@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 /*
  * This script can be used to generate metadata for SimpleSAMLphp
  * based on an XML metadata file.
@@ -19,7 +21,7 @@ if (!\SimpleSAML\Module::isModuleEnabled('metarefresh')) {
 }
 
 // Initialize the configuration
-$configdir = (new \SimpleSAML\Utils\Config)->getConfigDir();
+$configdir = (new \SimpleSAML\Utils\Config())->getConfigDir();
 \SimpleSAML\Configuration::setConfigDir($configdir);
 
 // $outputDir contains the directory we will store the generated metadata in

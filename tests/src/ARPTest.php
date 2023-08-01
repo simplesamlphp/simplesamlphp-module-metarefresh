@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SimpleSAML\Test\Module\metarefresh;
 
 use PHPUnit\Framework\TestCase;
@@ -8,7 +10,7 @@ use SimpleSAML\Module\metarefresh\ARP;
 
 class ARPTest extends TestCase
 {
-    function testARP()
+    public function testARP(): void
     {
         $config = Configuration::loadFromArray(
             ['module.enable' => ['metarefresh' => true]],
@@ -17,7 +19,7 @@ class ARPTest extends TestCase
         );
         Configuration::setPreLoadedConfig($config, 'config.php');
 
-        $metadata = [1=>['metadata'=>['entityid'=>'urn:test:loeki.tv', 'attributes' => ['aap','noot','mobile']]]];
+        $metadata = [1 => ['metadata' => ['entityid' => 'urn:test:loeki.tv', 'attributes' => ['aap','noot','mobile']]]];
         $attributemap = 'test';
         $prefix = 'beforeit';
         $suffix = 'thereafter';
@@ -32,6 +34,5 @@ class ARPTest extends TestCase
         $this->assertStringContainsString($expectentity, $xml);
         $this->assertStringContainsString($expectattributeunmapped, $xml);
         $this->assertStringContainsString($expectattributemapped, $xml);
-        
     }
 }

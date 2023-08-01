@@ -19,6 +19,11 @@
     <!-- This is the rule we inherit from. If you want to exclude some specific rules, see the docs on how to do that -->
     <rule ref="PSR12"/>
     <rule ref="vendor/simplesamlphp/simplesamlphp-test-framework/phpcs-simplesamlphp.xml"/>
+
+    <!-- Require the file to start with a declare(strict_types=1); -->
+    <rule ref="Generic.PHP.RequireStrictTypes">
+      <exclude-pattern>config-templates/*</exclude-pattern>
+    </rule>
 </ruleset>
 
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SimpleSAML\Test\Module\metarefresh;
 
 use PHPUnit\Framework\TestCase;
@@ -87,7 +89,7 @@ class MetaLoaderTest extends TestCase
     protected function tearDown(): void
     {
         if ($this->tmpdir && is_dir($this->tmpdir)) {
-            foreach (array_diff(scandir($this->tmpdir), array('.','..')) as $file) {
+            foreach (array_diff(scandir($this->tmpdir), ['.','..']) as $file) {
                 unlink($this->tmpdir . '/' . $file);
             }
             rmdir($this->tmpdir);
@@ -102,7 +104,7 @@ class MetaLoaderTest extends TestCase
         /* match a line from the cert before we attempt to parse */
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
 
-        $output = $this->getActualOutput();
+        $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
         } catch (\Exception $e) {
@@ -133,9 +135,12 @@ class MetaLoaderTest extends TestCase
         $this->metaloader->writeMetadataFiles($this->tmpdir);
         $this->assertFileExists($this->tmpdir . '/saml20-idp-remote.php');
 
+        /** @psalm-suppress UnresolvableInclude */
         @include_once($this->tmpdir . '/saml20-idp-remote.php');
+        /** @psalm-suppress UndefinedVariable */
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
         $this->assertTrue(
+            /** @psalm-suppress UndefinedVariable */
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
         );
     }
@@ -151,7 +156,7 @@ class MetaLoaderTest extends TestCase
         $metaloader->loadSource($this->source);
         $metaloader->dumpMetadataStdOut();
 
-        $output = $this->getActualOutput();
+        $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
         } catch (\Exception $e) {
@@ -182,7 +187,7 @@ class MetaLoaderTest extends TestCase
         /* match a line from the cert before we attempt to parse */
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
 
-        $output = $this->getActualOutput();
+        $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
         } catch (\Exception $e) {
@@ -215,7 +220,7 @@ class MetaLoaderTest extends TestCase
         $this->metaloader->dumpMetadataStdOut();
 
         /* Expected output is empty */
-        $output = $this->getActualOutput();
+        $output = $this->getActualOutputForAssertion();
         $this->assertEmpty($output);
     }
 
@@ -250,7 +255,7 @@ class MetaLoaderTest extends TestCase
         /* match a line from the cert before we attempt to parse */
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
 
-        $output = $this->getActualOutput();
+        $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
         } catch (\Exception $e) {
