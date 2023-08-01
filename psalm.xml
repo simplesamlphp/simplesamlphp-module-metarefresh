@@ -34,8 +34,8 @@
         <!-- Ignore UnresolvableInclude -->
         <UnresolvableInclude>
             <errorLevel type="suppress">
-                <file name="lib/ARP.php" />
-                <file name="lib/MetaLoader.php" />
+                <file name="src/ARP.php" />
+                <file name="src/MetaLoader.php" />
                 <file name="tests/bootstrap.php" />
             </errorLevel>
         </UnresolvableInclude>

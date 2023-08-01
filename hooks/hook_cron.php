@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use Webmozart\Assert\Assert;

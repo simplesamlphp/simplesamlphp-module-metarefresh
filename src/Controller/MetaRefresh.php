@@ -13,8 +13,7 @@ use SimpleSAML\Module\metarefresh\MetaLoader;
 use SimpleSAML\Session;
 use SimpleSAML\Utils;
 use SimpleSAML\XHTML\Template;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\{Request, Response};
 
 /**
  * Controller class for the metarefresh module.
@@ -26,9 +25,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MetaRefresh
 {
-    /** @var \SimpleSAML\Configuration */
-    protected Configuration $config;
-
     /** @var \SimpleSAML\Configuration */
     protected Configuration $module_config;
 
@@ -48,9 +44,8 @@ class MetaRefresh
      * @throws \Exception
      */
     public function __construct(
-        Configuration $config
+        protected Configuration $config
     ) {
-        $this->config = $config;
         $this->module_config = Configuration::getConfig('module_metarefresh.php');
         $this->authUtils = new Utils\Auth();
     }
@@ -77,9 +72,10 @@ class MetaRefresh
     }
 
     /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
      * @return \SimpleSAML\XHTML\Template
      */
-    public function main(): Template
+    public function main(Request $request): Template
     {
         $this->authUtils->requireAdmin();
 
