@@ -3,7 +3,6 @@
 namespace SimpleSAML\Module\metarefresh;
 
 use Exception;
-use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
