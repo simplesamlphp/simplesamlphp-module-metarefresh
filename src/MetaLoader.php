@@ -285,19 +285,16 @@ class MetaLoader
              * Do a recursive comparison for each whitelist of the attributewhitelist with the idpMetadata for this
              * IdP. At least one of these whitelists should match
              */
-            $match = false;
             foreach ($source['attributewhitelist'] as $whitelist) {
                 if ($this->containsArray($whitelist, $idpMetadata)) {
-                    $match = true;
-                    break;
+                    Logger::debug('Whitelisted entityID: ' . $entity->getEntityID());
+                    return true;
                 }
             }
-            if (!$match) {
-                /* No match found -> next IdP */
-                return false;
-            }
-            Logger::debug('Whitelisted entityID: ' . $entity->getEntityID());
+
+            return false;
         }
+
         return true;
     }
 
@@ -337,6 +334,7 @@ class MetaLoader
                             break;
                         }
                     }
+
                     if (!$submatch) {
                         return false;
                     }
@@ -362,6 +360,7 @@ class MetaLoader
                     }
                 }
             }
+
             /* each src key/value matches */
             return true;
         } else {
