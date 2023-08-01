@@ -155,6 +155,8 @@ class MetaLoader
         }
 
         foreach ($entities as $entity) {
+            unset($entity['entityDescriptor']);
+            
             if (isset($source['blacklist'])) {
                 if (!empty($source['blacklist']) && in_array($entity->getEntityId(), $source['blacklist'], true)) {
                     Logger::info('Skipping "'.$entity->getEntityId().'" - blacklisted.'."\n");
@@ -661,9 +663,9 @@ class MetaLoader
 
     /**
      * This function uses the `PDO` metadata handler to upsert metadata in database.
-     * 
+     *
      * @param array $config An associative array with the configuration for `PDO` handler.
-     *  
+     *
      * @return void
      */
     public function writeMetadataPdo(array $config = []): void
