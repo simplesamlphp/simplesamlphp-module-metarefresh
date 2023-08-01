@@ -241,7 +241,7 @@ class MetaLoaderTest extends TestCase
             ],
             [
                 '#RegistrationInfo#' => [
-                    '#registrationAuthority#'
+                    '#authority#'
                     => '#http://www.surfconext.nl/#',
                 ],
                 '#EntityAttributes#' => [
