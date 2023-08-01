@@ -156,6 +156,8 @@ class MetaLoader
         }
 
         foreach ($entities as $entity) {
+            unset($entity['entityDescriptor']);
+
             if (!$this->processBlacklist($entity, $source)) {
                 continue;
             }
