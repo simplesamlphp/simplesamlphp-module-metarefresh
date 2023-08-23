@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace SimpleSAML\Module\metarefresh;
 
 use Exception;
+use SAML2\DOMDocumentFactory;
 use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata;
 use SimpleSAML\Utils;
-use SimpleSAML\XML\DOMDocumentFactory;
 
 /**
  * @package SimpleSAMLphp
