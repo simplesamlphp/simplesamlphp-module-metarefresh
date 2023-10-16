@@ -196,10 +196,10 @@ class MetaLoader
             }
             if (in_array('attributeauthority-remote', $this->types, true)) {
                 $attributeAuthorities = $entity->getAttributeAuthorities();
-                if (!empty($attributeAuthorities)) {
+                if (count($attributeAuthorities) && !empty($attributeAuthorities[0])) {
                     $this->addMetadata(
                         $source['src'],
-                        $attributeAuthorities,
+                        $attributeAuthorities[0],
                         'attributeauthority-remote',
                         $template
                     );
