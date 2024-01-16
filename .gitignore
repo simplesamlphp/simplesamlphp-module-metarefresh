@@ -1,8 +1,10 @@
 ### php-cs-fixer ###
+.phpunit.cache/
+.phpunit.result.cache
 .php_cs.cache
+bin/*
+build/*
 composer.lock
 cs_fixer_tmp*
-bin/*
+phpunit.xml.bak
 vendor/*
-build/*
-.phpunit.result.cache
