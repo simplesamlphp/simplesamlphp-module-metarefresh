@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SimpleSAML\Module\metarefresh;
 
 use Exception;
-use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata;
@@ -291,6 +290,7 @@ class MetaLoader
                     break;
                 }
             }
+
             if (!$match) {
                 /* No match found -> next IdP */
                 return false;

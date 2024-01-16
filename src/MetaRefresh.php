@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace SimpleSAML\Module\metarefresh;
 
 use Exception;
-use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata\MetaDataStorageSource;
-use SimpleSAML\Module;
 
 class MetaRefresh
 {

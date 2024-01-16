@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SimpleSAML\Test\Module\metarefresh;
 
 use PHPUnit\Framework\TestCase;
-use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use SimpleSAML\Configuration;
 
 class MetaLoaderTest extends TestCase
@@ -241,7 +240,7 @@ class MetaLoaderTest extends TestCase
             ],
             [
                 '#RegistrationInfo#' => [
-                    '#registrationAuthority#'
+                    '#authority#'
                     => '#http://www.surfconext.nl/#',
                 ],
                 '#EntityAttributes#' => [
@@ -261,6 +260,7 @@ class MetaLoaderTest extends TestCase
         } catch (\Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
+
         /* Check we matched the IdP */
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
