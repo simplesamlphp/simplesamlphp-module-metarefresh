@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
 use SimpleSAML\Module\metarefresh\Controller;
 use SimpleSAML\Utils;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Set of tests for the controllers in the "metarefresh" module.
@@ -94,17 +93,13 @@ class MetaRefreshTest extends TestCase
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
         Configuration::setPreLoadedConfig($this->authsources, 'authsources.php');
-        $request = Request::create(
-            '/',
-            'GET'
-        );
 
         $c = new Controller\MetaRefresh($this->config);
         $c->setAuthUtils($this->authUtils);
         $c->setModuleConfig($this->module_config);
 
         /** @var \SimpleSAML\XHTML\Template $response */
-        $response = $c->main($request);
+        $response = $c->main();
 
         $this->assertTrue($response->isSuccessful());
 
