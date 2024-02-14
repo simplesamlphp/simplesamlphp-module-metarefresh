@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
 use SimpleSAML\Module\metarefresh\Controller;
 use SimpleSAML\Utils;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Set of tests for the controllers in the "metarefresh" module.
