@@ -42,7 +42,7 @@ class MetaRefreshTest extends TestCase
                 'module.enable' => ['metarefresh' => true],
             ],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
 
         $this->module_config = Configuration::loadFromArray(
@@ -52,16 +52,16 @@ class MetaRefreshTest extends TestCase
                         'cron' => ['hourly'],
                         'sources' => [
                             [
-                                'src' => 'https://example.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway'
-                            ]
+                                'src' => 'https://example.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway',
+                            ],
                         ],
                         'outputFormat' => 'flatfile',
-                        'outputDir' => sys_get_temp_dir()
-                    ]
-                ]
+                        'outputDir' => sys_get_temp_dir(),
+                    ],
+                ],
             ],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
 
         $this->authsources = Configuration::loadFromArray(
@@ -69,7 +69,7 @@ class MetaRefreshTest extends TestCase
                 'admin' => ['core:AdminPassword'],
             ],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
 
         $this->authUtils = new class () extends Utils\Auth {

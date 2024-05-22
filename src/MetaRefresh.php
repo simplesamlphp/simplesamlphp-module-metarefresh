@@ -85,7 +85,7 @@ class MetaRefresh
             $available_types = [
                 'saml20-idp-remote',
                 'saml20-sp-remote',
-                'attributeauthority-remote'
+                'attributeauthority-remote',
             ];
             $set_types = $set->getOptionalArray('types', $available_types);
 

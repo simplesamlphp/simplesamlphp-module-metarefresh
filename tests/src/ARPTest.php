@@ -19,7 +19,14 @@ class ARPTest extends TestCase
         );
         Configuration::setPreLoadedConfig($config, 'config.php');
 
-        $metadata = [1 => ['metadata' => ['entityid' => 'urn:test:loeki.tv', 'attributes' => ['aap','noot','mobile']]]];
+        $metadata = [
+            1 => [
+                'metadata' => [
+                    'entityid' => 'urn:test:loeki.tv',
+                    'attributes' => ['aap','noot','mobile'],
+                ],
+            ],
+        ];
         $attributemap = 'test';
         $prefix = 'beforeit';
         $suffix = 'thereafter';

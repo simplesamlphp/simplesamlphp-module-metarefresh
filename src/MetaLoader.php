@@ -38,7 +38,7 @@ class MetaLoader
     private array $types = [
         'saml20-idp-remote',
         'saml20-sp-remote',
-        'attributeauthority-remote'
+        'attributeauthority-remote',
     ];
 
 
