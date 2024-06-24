@@ -5,4 +5,5 @@ cs_fixer_tmp*
 bin/*
 vendor/*
 build/*
+.phpunit.cache
 .phpunit.result.cache
