@@ -8,3 +8,4 @@ composer.lock
 cs_fixer_tmp*
 phpunit.xml.bak
 vendor/*
+build/*
