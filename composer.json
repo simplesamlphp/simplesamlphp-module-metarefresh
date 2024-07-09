@@ -37,7 +37,7 @@
         "simplesamlphp/composer-module-installer": "^1.3.4",
         "simplesamlphp/simplesamlphp": "^2.1",
         "simplesamlphp/xml-common": "^1.12",
-        "symfony/http-foundation": "^6.0"
+        "symfony/http-foundation": "^7.1"
     },
     "require-dev": {
         "simplesamlphp/simplesamlphp-test-framework": "^1.5.5"
