@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Test\Module\metarefresh;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
 
@@ -77,7 +78,7 @@ class MetaLoaderTest extends TestCase
         $this->config = Configuration::loadFromArray(
             ['module.enable' => ['metarefresh' => true]],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
         Configuration::setPreLoadedConfig($this->config, 'config.php');
         $this->metaloader = new \SimpleSAML\Module\metarefresh\MetaLoader();
@@ -106,20 +107,20 @@ class MetaLoaderTest extends TestCase
         $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
-            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
 
     public function testSignatureVerificationCertificatePass(): void
     {
         $this->metaloader->loadSource(
-            array_merge($this->source, ['certificates' => [dirname(__FILE__, 2) . '/mdx.pem']])
+            array_merge($this->source, ['certificates' => [dirname(__FILE__, 2) . '/mdx.pem']]),
         );
         $this->metaloader->dumpMetadataStdOut();
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
@@ -140,7 +141,7 @@ class MetaLoaderTest extends TestCase
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
         $this->assertTrue(
             /** @psalm-suppress UndefinedVariable */
-            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
 
@@ -158,7 +159,7 @@ class MetaLoaderTest extends TestCase
         $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
@@ -189,14 +190,14 @@ class MetaLoaderTest extends TestCase
         $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
         /* Check we matched the IdP */
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
-            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
 
@@ -257,7 +258,7 @@ class MetaLoaderTest extends TestCase
         $output = $this->getActualOutputForAssertion();
         try {
             eval($output);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
 
@@ -265,7 +266,7 @@ class MetaLoaderTest extends TestCase
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
-            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth']))
+            empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
 }

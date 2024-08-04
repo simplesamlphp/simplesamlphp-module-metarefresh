@@ -15,7 +15,7 @@ class ARPTest extends TestCase
         $config = Configuration::loadFromArray(
             ['module.enable' => ['metarefresh' => true]],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
         Configuration::setPreLoadedConfig($config, 'config.php');
 
