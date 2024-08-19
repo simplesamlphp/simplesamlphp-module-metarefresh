@@ -7,5 +7,6 @@ build/*
 composer.lock
 cs_fixer_tmp*
 phpunit.xml.bak
+/super-linter-output/
 vendor/*
 build/*
