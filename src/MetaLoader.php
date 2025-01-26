@@ -10,6 +10,7 @@ use SimpleSAML\Logger;
 use SimpleSAML\Metadata;
 use SimpleSAML\Utils;
 use SimpleSAML\XML\DOMDocumentFactory;
+use Symfony\Component\VarExporter\VarExporter;
 
 /**
  * @package SimpleSAMLphp
@@ -620,7 +621,7 @@ class MetaLoader
                 foreach ($elements as $m) {
                     $entityID = $m['metadata']['entityid'];
                     $content .= "\n" . '$metadata[\'';
-                    $content .= addslashes($entityID) . '\'] = ' . var_export($m['metadata'], true) . ';' . "\n";
+                    $content .= addslashes($entityID) . '\'] = ' . VarExporter::export($m['metadata']) . ';' . "\n";
                 }
 
                 $sysUtils = new Utils\System();
