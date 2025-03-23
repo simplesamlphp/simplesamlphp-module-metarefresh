@@ -122,12 +122,12 @@ class MetaLoader
                 Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
-            } elseif (preg_match('@^HTTP/1\.[01]\s304\s@', $responseHeaders[0])) {
+            } elseif (preg_match('@^HTTP/(2\.0|1\.[01])\s304\s@', $responseHeaders[0])) {
                 // 304 response
                 Logger::debug('Received HTTP 304 (Not Modified) - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
-            } elseif (!preg_match('@^HTTP/1\.[01]\s200\s@', $responseHeaders[0])) {
+            } elseif (!preg_match('@^HTTP/(2\.0|1\.[01])\s200\s@', $responseHeaders[0])) {
                 // Other error
                 Logger::info('Error from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
