@@ -43,7 +43,7 @@ class MetaRefresh
      * @throws \Exception
      */
     public function __construct(
-        Configuration $config,
+        protected Configuration $config,
     ) {
         $this->config = $config;
         $this->module_config = Configuration::getConfig('module_metarefresh.php');
