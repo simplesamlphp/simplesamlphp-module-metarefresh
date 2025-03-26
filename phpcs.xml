@@ -24,6 +24,9 @@
     <rule ref="Generic.PHP.RequireStrictTypes">
       <exclude-pattern>config-templates/*</exclude-pattern>
     </rule>
+
+    <!-- Ignore files with side effects that we cannot fix -->
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>bin/*</exclude-pattern>
+    </rule>
 </ruleset>
-
-

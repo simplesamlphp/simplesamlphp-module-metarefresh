@@ -195,6 +195,8 @@ Each metadata source has the following options:
     possible to use a self signed certificate that has expired. Add more than one
     certificate to be able to handle key rollover.
 
+    Note: certificates files must be formatted in PEM format.
+
 `template`
 :   This is an array which will be combined with the metadata fetched to
     generate the final metadata array.

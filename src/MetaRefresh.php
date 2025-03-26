@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace SimpleSAML\Module\metarefresh;
 
 use Exception;
-use SimpleSAML\Assert\Assert;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 use SimpleSAML\Metadata\MetaDataStorageSource;
-use SimpleSAML\Module;
 
 class MetaRefresh
 {
@@ -87,7 +85,7 @@ class MetaRefresh
             $available_types = [
                 'saml20-idp-remote',
                 'saml20-sp-remote',
-                'attributeauthority-remote'
+                'attributeauthority-remote',
             ];
             $set_types = $set->getOptionalArray('types', $available_types);
 

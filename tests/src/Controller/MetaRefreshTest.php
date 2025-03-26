@@ -5,15 +5,9 @@ declare(strict_types=1);
 namespace SimpleSAML\Test\Module\metarefresh\Controller;
 
 use PHPUnit\Framework\TestCase;
-use SimpleSAML\Auth;
 use SimpleSAML\Configuration;
-use SimpleSAML\Error;
 use SimpleSAML\Module\metarefresh\Controller;
-use SimpleSAML\Session;
 use SimpleSAML\Utils;
-use SimpleSAML\XHTML\Template;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Set of tests for the controllers in the "metarefresh" module.
@@ -48,7 +42,7 @@ class MetaRefreshTest extends TestCase
                 'module.enable' => ['metarefresh' => true],
             ],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
 
         $this->module_config = Configuration::loadFromArray(
@@ -58,16 +52,16 @@ class MetaRefreshTest extends TestCase
                         'cron' => ['hourly'],
                         'sources' => [
                             [
-                                'src' => 'https://example.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway'
-                            ]
+                                'src' => 'https://example.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway',
+                            ],
                         ],
                         'outputFormat' => 'flatfile',
-                        'outputDir' => sys_get_temp_dir()
-                    ]
-                ]
+                        'outputDir' => sys_get_temp_dir(),
+                    ],
+                ],
             ],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
 
         $this->authsources = Configuration::loadFromArray(
@@ -75,7 +69,7 @@ class MetaRefreshTest extends TestCase
                 'admin' => ['core:AdminPassword'],
             ],
             '[ARRAY]',
-            'simplesaml'
+            'simplesaml',
         );
 
         $this->authUtils = new class () extends Utils\Auth {
@@ -99,17 +93,13 @@ class MetaRefreshTest extends TestCase
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
 
         Configuration::setPreLoadedConfig($this->authsources, 'authsources.php');
-        $request = Request::create(
-            '/',
-            'GET'
-        );
 
         $c = new Controller\MetaRefresh($this->config);
         $c->setAuthUtils($this->authUtils);
         $c->setModuleConfig($this->module_config);
 
         /** @var \SimpleSAML\XHTML\Template $response */
-        $response = $c->main($request);
+        $response = $c->main();
 
         $this->assertTrue($response->isSuccessful());
 

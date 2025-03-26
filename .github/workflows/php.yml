@@ -19,16 +19,18 @@ jobs:
     runs-on: ['ubuntu-latest']
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Lint Code Base
-        uses: github/super-linter/slim@v5
+        uses: super-linter/super-linter/slim@v7
         env:
+          SAVE_SUPER_LINTER_OUTPUT: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: 'tools/linters'
           LOG_LEVEL: NOTICE
           VALIDATE_ALL_CODEBASE: true
-          LINTER_RULES_PATH: 'tools/linters'
           VALIDATE_CSS: true
           VALIDATE_JAVASCRIPT_ES: true
           VALIDATE_JSON: true
@@ -48,7 +50,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           # Should be the higest supported version, so we can use the newest tools
-          php-version: '8.2'
+          php-version: '8.3'
           tools: composer, composer-require-checker, composer-unused, phpcs, psalm
           # optional performance gain for psalm: opcache
           extensions: ctype, date, dom, fileinfo, filter, hash, intl, mbstring, opcache, openssl, pcre, spl, xml
@@ -56,13 +58,13 @@ jobs:
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get composer cache directory
         run: echo COMPOSER_CACHE="$(composer config cache-files-dir)" >> "$GITHUB_ENV"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: $COMPOSER_CACHE
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -114,7 +116,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           # Should be the lowest supported version
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: ctype, date, dom, fileinfo, filter, hash, intl, mbstring, openssl, pcre, spl, xml
           tools: composer
           coverage: none
@@ -122,13 +124,13 @@ jobs:
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get composer cache directory
         run: echo COMPOSER_CACHE="$(composer config cache-files-dir)" >> "$GITHUB_ENV"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: $COMPOSER_CACHE
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -154,7 +156,7 @@ jobs:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['8.0', '8.1', '8.2']
+        php-versions: ['8.1', '8.2', '8.3']
 
     steps:
       - name: Setup PHP, with composer and extensions
@@ -178,13 +180,13 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get composer cache directory
         run: echo COMPOSER_CACHE="$(composer config cache-files-dir)" >> "$GITHUB_ENV"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: $COMPOSER_CACHE
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -194,16 +196,16 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run unit tests with coverage
-        if: ${{ matrix.php-versions == '8.2' }}
+        if: ${{ matrix.php-versions == '8.3' }}
         run: vendor/bin/phpunit
 
       - name: Run unit tests (no coverage)
-        if: ${{ matrix.php-versions != '8.2' }}
+        if: ${{ matrix.php-versions != '8.3' }}
         run: vendor/bin/phpunit --no-coverage
 
       - name: Save coverage data
-        if: ${{ matrix.php-versions == '8.2' }}
-        uses: actions/upload-artifact@v3
+        if: ${{ matrix.php-versions == '8.3' }}
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-data
           path: ${{ github.workspace }}/build
@@ -216,7 +218,7 @@ jobs:
       fail-fast: true
       matrix:
         operating-system: [windows-latest]
-        php-versions: ['8.0', '8.1', '8.2']
+        php-versions: ['8.1', '8.2', '8.3']
 
     steps:
       - name: Setup PHP, with composer and extensions
@@ -240,13 +242,13 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get composer cache directory
         run: echo COMPOSER_CACHE="$(composer config cache-files-dir)" >> "$env:GITHUB_ENV"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: $COMPOSER_CACHE
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -263,15 +265,15 @@ jobs:
     runs-on: [ubuntu-latest]
     needs: [unit-tests-linux]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage-data
           path: ${{ github.workspace }}/build
 
       - name: Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
@@ -284,9 +286,9 @@ jobs:
     if: |
       always() &&
       needs.coverage.result == 'success' ||
-      (needs.unit-tests-linux == 'success' && needs.coverage == 'skipped')
+      (needs.unit-tests-linux.result == 'success' && needs.coverage.result == 'skipped')
 
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v5
         with:
           name: coverage-data

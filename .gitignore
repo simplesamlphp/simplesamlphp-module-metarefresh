@@ -1,9 +1,12 @@
 ### php-cs-fixer ###
+.phpunit.cache/
+.phpunit.result.cache
 .php_cs.cache
+bin/*
+build/*
 composer.lock
 cs_fixer_tmp*
-bin/*
+phpunit.xml.bak
+/super-linter-output/
 vendor/*
 build/*
-.phpunit.cache
-.phpunit.result.cache
