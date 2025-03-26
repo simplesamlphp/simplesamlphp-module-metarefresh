@@ -23,5 +23,12 @@
                 <file name="tests/bootstrap.php" />
             </errorLevel>
         </UnresolvableInclude>
+
+        <!-- Ignore MissingOverrideAttribute -->
+        <MissingOverrideAttribute>
+            <errorLevel type="suppress">
+                <file name="tests" />
+            </errorLevel>
+        </MissingOverrideAttribute>
     </issueHandlers>
 </psalm>
