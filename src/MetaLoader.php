@@ -460,7 +460,7 @@ class MetaLoader
     private function loadXML(string $data, array $source): array
     {
         try {
-            $doc = DOMDocumentFactory::fromString($data);
+            $doc = DOMDocumentFactory::fromString($data, DOMDocumentFactory::DEFAULT_OPTIONS | LIBXML_PARSEHUGE);
         } catch (Exception $e) {
             throw new Exception('Failed to read XML from ' . $source['src']);
         }
