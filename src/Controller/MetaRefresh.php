@@ -40,7 +40,7 @@ class MetaRefresh
      * @throws \Exception
      */
     public function __construct(
-        protected Configuration $config
+        protected Configuration $config,
     ) {
         $this->module_config = Configuration::getConfig('module_metarefresh.php');
         $this->authUtils = new Utils\Auth();
