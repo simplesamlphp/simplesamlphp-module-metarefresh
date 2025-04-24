@@ -14,32 +14,32 @@ on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
 
 jobs:
+  phplinter:
+    name: 'PHP-Linter'
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1', '8.2', '8.3', '8.4']
+
+    uses: simplesamlphp/simplesamlphp-test-framework/.github/workflows/reusable_phplinter.yml@v1.9.2
+    with:
+      php-version: ${{ matrix.php-version }}
+
   linter:
-    name: Linter
-    runs-on: ['ubuntu-latest']
+    name: 'Linter'
+    strategy:
+      fail-fast: false
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v7
-        env:
-          SAVE_SUPER_LINTER_OUTPUT: false
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LINTER_RULES_PATH: 'tools/linters'
-          LOG_LEVEL: NOTICE
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_CSS: true
-          VALIDATE_JAVASCRIPT_ES: true
-          VALIDATE_JSON: true
-          VALIDATE_YAML: true
-          VALIDATE_XML: true
-          VALIDATE_GITHUB_ACTIONS: true
+    uses: simplesamlphp/simplesamlphp-test-framework/.github/workflows/reusable_linter.yml@v1.9.2
+    with:
+      enable_eslinter: false
+      enable_jsonlinter: true
+      enable_stylelinter: false
+      enable_yamllinter: true
 
   quality:
     name: Quality control
+    needs: [unit-tests-linux]
     runs-on: [ubuntu-latest]
 
     steps:
@@ -49,7 +49,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           # Should be the higest supported version, so we can use the newest tools
-          php-version: '8.3'
+          php-version: '8.4'
           tools: composer, composer-require-checker, composer-unused, phpcs, psalm
           # optional performance gain for psalm: opcache
           extensions: ctype, date, dom, fileinfo, filter, hash, intl, mbstring, opcache, openssl, pcre, spl, xml
@@ -108,7 +108,9 @@ jobs:
 
   security:
     name: Security checks
+    needs: [unit-tests-linux]
     runs-on: [ubuntu-latest]
+
     steps:
       - name: Setup PHP, with composer and extensions
         # https://github.com/shivammathur/setup-php
@@ -150,12 +152,12 @@ jobs:
   unit-tests-linux:
     name: "Unit tests, PHP ${{ matrix.php-versions }}, ${{ matrix.operating-system }}"
     runs-on: ${{ matrix.operating-system }}
-    needs: [linter, quality, security]
+    needs: [phplinter, linter]
     strategy:
       fail-fast: false
       matrix:
         operating-system: [ubuntu-latest]
-        php-versions: ['8.1', '8.2', '8.3']
+        php-versions: ['8.1', '8.2', '8.3', '8.4']
 
     steps:
       - name: Setup PHP, with composer and extensions
@@ -195,15 +197,15 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Run unit tests with coverage
-        if: ${{ matrix.php-versions == '8.3' }}
+        if: ${{ matrix.php-versions == '8.4' }}
         run: vendor/bin/phpunit
 
       - name: Run unit tests (no coverage)
-        if: ${{ matrix.php-versions != '8.3' }}
+        if: ${{ matrix.php-versions != '8.4' }}
         run: vendor/bin/phpunit --no-coverage
 
       - name: Save coverage data
-        if: ${{ matrix.php-versions == '8.3' }}
+        if: ${{ matrix.php-versions == '8.4' }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-data
@@ -212,12 +214,13 @@ jobs:
   unit-tests-windows:
     name: "Unit tests, PHP ${{ matrix.php-versions }}, ${{ matrix.operating-system }}"
     runs-on: ${{ matrix.operating-system }}
-    needs: [linter, quality, security]
+    needs: [phplinter, linter]
+
     strategy:
       fail-fast: true
       matrix:
         operating-system: [windows-latest]
-        php-versions: ['8.1', '8.2', '8.3']
+        php-versions: ['8.1', '8.2', '8.3', '8.4']
 
     steps:
       - name: Setup PHP, with composer and extensions
