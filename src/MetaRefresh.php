@@ -66,7 +66,7 @@ class MetaRefresh
                 throw new Exception("Invalid outputDir specified.");
             }
 
-            $outputFormat = $set->getValueValidate('outputFormat', ['flatfile', 'serialize', 'pdo']);
+            $outputFormat = $set->getOptionalValueValidate('outputFormat', ['flatfile', 'serialize', 'pdo'], 'flatfile');
 
             $oldMetadataSrc = MetaDataStorageSource::getSource([
                 'type' => $outputFormat,
