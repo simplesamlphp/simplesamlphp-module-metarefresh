@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
 use SimpleSAML\Module\metarefresh\ARP;
 
-class ARPTest extends TestCase
+final class ARPTest extends TestCase
 {
     public function testARP(): void
     {
