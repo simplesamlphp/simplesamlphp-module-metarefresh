@@ -672,7 +672,7 @@ class MetaLoader
      */
     public function writeMetadataPdo(Configuration $globalConfig, array $config = []): void
     {
-        $metaHandler = new Metadata\MetaDataStorageHandlerPdo($globalConfig->toArray(), $config);
+        $metaHandler = new Metadata\MetaDataStorageHandlerPdo($config);
 
         foreach ($this->metadata as $set => $elements) {
             foreach ($elements as $m) {
