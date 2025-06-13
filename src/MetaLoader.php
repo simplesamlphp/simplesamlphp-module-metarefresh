@@ -214,7 +214,7 @@ class MetaLoader
     /**
      * @param \SimpleSAML\Metadata\SAMLParser $entity
      * @param array $source
-     * @bool
+     * @return bool
      */
     private function processCertificates(Metadata\SAMLParser $entity, array $source): bool
     {
@@ -234,7 +234,7 @@ class MetaLoader
     /**
      * @param \SimpleSAML\Metadata\SAMLParser $entity
      * @param array $source
-     * @bool
+     * @return bool
      */
     private function processBlacklist(Metadata\SAMLParser $entity, array $source): bool
     {
@@ -251,7 +251,7 @@ class MetaLoader
     /**
      * @param \SimpleSAML\Metadata\SAMLParser $entity
      * @param array $source
-     * @bool
+     * @return bool
      */
     private function processWhitelist(Metadata\SAMLParser $entity, array $source): bool
     {
@@ -268,7 +268,7 @@ class MetaLoader
     /**
      * @param \SimpleSAML\Metadata\SAMLParser $entity
      * @param array $source
-     * @bool
+     * @return bool
      */
     private function processAttributeWhitelist(Metadata\SAMLParser $entity, array $source): bool
     {
