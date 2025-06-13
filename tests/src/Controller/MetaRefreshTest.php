@@ -14,7 +14,7 @@ use SimpleSAML\Utils;
  *
  * @package SimpleSAML\Test
  */
-class MetaRefreshTest extends TestCase
+final class MetaRefreshTest extends TestCase
 {
     /** @var \SimpleSAML\Configuration */
     protected $authsources;
@@ -98,9 +98,7 @@ class MetaRefreshTest extends TestCase
         $c->setAuthUtils($this->authUtils);
         $c->setModuleConfig($this->module_config);
 
-        /** @var \SimpleSAML\XHTML\Template $response */
         $response = $c->main();
-
         $this->assertTrue($response->isSuccessful());
 
         $contents = $response->getContents();

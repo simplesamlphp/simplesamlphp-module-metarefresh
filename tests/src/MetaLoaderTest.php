@@ -8,7 +8,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
 
-class MetaLoaderTest extends TestCase
+final class MetaLoaderTest extends TestCase
 {
     /** \SimpleSAML\Module\metarefresh\MetaLoader */
     private $metaloader;

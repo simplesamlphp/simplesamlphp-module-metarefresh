@@ -17,13 +17,6 @@
     </projectFiles>
 
     <issueHandlers>
-        <!-- Ignore UnresolvableInclude on CLI-scripts -->
-        <UnresolvableInclude>
-            <errorLevel type="suppress">
-                <file name="tests/bootstrap.php" />
-            </errorLevel>
-        </UnresolvableInclude>
-
         <!-- Ignore MissingOverrideAttribute -->
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
