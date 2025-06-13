@@ -50,7 +50,7 @@ class MetaLoader
      * @param string|null  $stateFile
      * @param object|null  $oldMetadataSrc
      */
-    public function __construct(int $expire = null, string $stateFile = null, object $oldMetadataSrc = null)
+    public function __construct(?int $expire = null, ?string $stateFile = null, ?object $oldMetadataSrc = null)
     {
         $this->expire = $expire;
         $this->oldMetadataSrc = $oldMetadataSrc;
@@ -522,7 +522,7 @@ class MetaLoader
      * @param string $type The metadata type.
      * @param array|null $template The template.
      */
-    private function addMetadata(string $filename, ?array $metadata, string $type, array $template = null): void
+    private function addMetadata(string $filename, ?array $metadata, string $type, ?array $template = null): void
     {
         if ($metadata === null) {
             return;
