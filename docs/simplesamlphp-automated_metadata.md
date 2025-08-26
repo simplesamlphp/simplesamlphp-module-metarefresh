@@ -255,7 +255,7 @@ Remember that the `type` parameter here must match the `outputFormat` in the con
 
 ## Configuring the cron module
 
-See the [cron module documentation](https://simplesamlphp.org/docs/stable/cron:cron) to configure `cron`
+See the [cron module documentation](https://simplesamlphp.org/docs/stable/cron/cron.html) to configure `cron`
 
 Once you have invoked cron, and if this operation seems to run fine, navigate
 to the **SimpleSAMLphp Admin** › **Federation**. Here you will see a list
