@@ -195,7 +195,7 @@ Each metadata source has the following options:
     possible to use a self signed certificate that has expired. Add more than one
     certificate to be able to handle key rollover.
 
-    Note: certificates files must be formatted in PEM format.
+:   Note: certificates files must be formatted in PEM format.
 
 `template`
 :   This is an array which will be combined with the metadata fetched to
@@ -227,7 +227,7 @@ Each metadata source has the following options:
     Matching of such a top-level element, itself being a (multi-level) array, means that at each level (recursively) the
     key and value match with the identity provider's metadata. Scalar keys and values are matched using PCRE.
     A typical use-case is to accept only identity providers from eduGAIN that match a combination of specific
-    EntityAttributes, such as the `https://refeds.org/sirtfi` assurance-certification *and*
+    EntityAttributes, such as the `https://refeds.org/sirtfi` assurance-certification _and_
     `http://refeds.org/category/research-and-scholarship` entity-category.
     Another example is filtering identity providers from a specific federation, by filtering on specific values of the
     registrationAuthority inside the RegistrationInfo.
@@ -258,12 +258,12 @@ Remember that the `type` parameter here must match the `outputFormat` in the con
 See the [cron module documentation](https://simplesamlphp.org/docs/stable/cron/cron.html) to configure `cron`
 
 Once you have invoked cron, and if this operation seems to run fine, navigate
-to the **SimpleSAMLphp Admin** › **Federation**. Here you will see a list
+to the _SimpleSAMLphp Admin_ › _Federation_. Here you will see a list
 of all the Identity Providers trusted. They will be listed with information
-about the maximum duration of their cached version, such as *(expires in 96.0
-hours)*.
+about the maximum duration of their cached version, such as _(expires in 96.0
+hours)_.
 
-You *may* need to adjust the below php.ini settings if the metadata files you consume are quite large.
+You _may_ need to adjust the below php.ini settings if the metadata files you consume are quite large.
 
 * `memory_limit`
 * `max_execution_time`
