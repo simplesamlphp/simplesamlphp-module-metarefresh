@@ -57,6 +57,7 @@ class MetaRefresh
         $this->authUtils = $authUtils;
     }
 
+
     /**
      * Inject the \SimpleSAML\Configuration dependency.
      *
@@ -66,6 +67,7 @@ class MetaRefresh
     {
         $this->module_config = $module_config;
     }
+
 
     /**
      * @return \SimpleSAML\XHTML\Template

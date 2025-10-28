@@ -74,6 +74,7 @@ final class MetaLoaderTest extends TestCase
         'tags' => ['my-tag'],
     ];
 
+
     protected function setUp(): void
     {
         $this->config = Configuration::loadFromArray(
@@ -87,6 +88,7 @@ final class MetaLoaderTest extends TestCase
         $this->source['src'] = dirname(__FILE__, 2) . '/testmetadata.xml';
     }
 
+
     protected function tearDown(): void
     {
         if ($this->tmpdir && is_dir($this->tmpdir)) {
@@ -96,6 +98,7 @@ final class MetaLoaderTest extends TestCase
             rmdir($this->tmpdir);
         }
     }
+
 
     public function testMetaLoader(): void
     {
@@ -121,6 +124,7 @@ final class MetaLoaderTest extends TestCase
         );
     }
 
+
     public function testSignatureVerificationCertificatePass(): void
     {
         $this->metaloader->loadSource(
@@ -129,6 +133,7 @@ final class MetaLoaderTest extends TestCase
         $this->metaloader->dumpMetadataStdOut();
         $this->expectOutputRegex('/UTEbMBkGA1UECgwSRXhhbXBsZSBVbml2ZXJzaXR5MRgwFgYDVQQDDA9pZHAuZXhh/');
     }
+
 
     public function testWriteMetadataFiles(): void
     {
@@ -148,6 +153,7 @@ final class MetaLoaderTest extends TestCase
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
+
 
     /**
      * Tests that setting an explicit expiry time will be added to the resulting
@@ -175,7 +181,8 @@ final class MetaLoaderTest extends TestCase
         $this->assertEquals(1000, $metadata['https://idp.example.com/idp/shibboleth']['expire']);
     }
 
-    /*
+
+    /**
      * Test two matching EntityAttributes (R&S + Sirtfi)
      */
     public function testAttributewhitelist1(): void
@@ -211,7 +218,8 @@ final class MetaLoaderTest extends TestCase
         );
     }
 
-    /*
+
+    /**
      * Test non-matching of the whitelist: result should be empty set
      */
     public function testAttributewhitelist2(): void
@@ -234,7 +242,8 @@ final class MetaLoaderTest extends TestCase
         $this->assertEmpty($output);
     }
 
-    /*
+
+    /**
      * Test non-matching of first entry, but matching of second, using both
      * RegistrationInfo and EntityAttributes
      */

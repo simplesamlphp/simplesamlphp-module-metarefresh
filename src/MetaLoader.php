@@ -371,6 +371,7 @@ class MetaLoader
         }
     }
 
+
     /**
      * Create HTTP context, with any available caches taken into account
      *
@@ -401,6 +402,7 @@ class MetaLoader
 
         return ['http' => ['header' => $rawheader]];
     }
+
 
     private function addCachedMetadata(array $source): void
     {

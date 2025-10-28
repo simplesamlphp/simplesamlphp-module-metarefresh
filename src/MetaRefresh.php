@@ -21,15 +21,17 @@ class MetaRefresh
      */
     private Configuration $modconfig;
 
+
     /**
-     * @param \SimpleSAML\Configuration              $config The configuration to use by the module.
-     * @param \SimpleSAML\Configuration              $modconfig The module-specific configuration to use by the module.
+     * @param \SimpleSAML\Configuration $config The configuration to use by the module.
+     * @param \SimpleSAML\Configuration $modconfig The module-specific configuration to use by the module.
      */
     public function __construct(Configuration $config, Configuration $modconfig)
     {
         $this->config = $config;
         $this->modconfig = $modconfig;
     }
+
 
     /**
      * @param string|null $crontag Only refresh sets which allow this crontag
