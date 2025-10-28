@@ -107,6 +107,7 @@ class MetaLoader
             $context = $this->createContext($source);
 
             $httpUtils = new Utils\HTTP();
+            $data = null;
             // GET!
             try {
                 /** @var array $response  We know this because we set the third parameter to `true` */
@@ -198,7 +199,7 @@ class MetaLoader
                 if (count($attributeAuthorities) && !empty($attributeAuthorities[0])) {
                     $this->addMetadata(
                         $source['src'],
-                        $attributeAuthorities[0],
+                        $attributeAuthorities,
                         'attributeauthority-remote',
                         $template,
                     );

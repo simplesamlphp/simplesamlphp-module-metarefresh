@@ -7,19 +7,20 @@ namespace SimpleSAML\Test\Module\metarefresh;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Configuration;
+use SimpleSAML\Module\metarefresh\MetaLoader;
 
 final class MetaLoaderTest extends TestCase
 {
     /** \SimpleSAML\Module\metarefresh\MetaLoader */
-    private $metaloader;
+    private MetaLoader $metaloader;
 
     /** @var \SimpleSAML\Configuration */
-    private $config;
+    private Configuration $config;
 
     /** @var string */
     private $tmpdir;
 
-    /** @var array */
+    /** @var array<mixed> */
     private $source = [
         'outputFormat' => 'flatfile',
         'conditionalGET' => false,
@@ -30,7 +31,7 @@ final class MetaLoaderTest extends TestCase
         ],
     ];
 
-    /** @var array */
+    /** @var array<mixed> */
     private $expected = [
         'entityid' => 'https://idp.example.com/idp/shibboleth',
         'description' => ['en' => 'OrganizationName',],
@@ -110,9 +111,12 @@ final class MetaLoaderTest extends TestCase
         } catch (Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
+
+        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
+            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
@@ -135,12 +139,12 @@ final class MetaLoaderTest extends TestCase
         $this->metaloader->writeMetadataFiles($this->tmpdir);
         $this->assertFileExists($this->tmpdir . '/saml20-idp-remote.php');
 
-        /** @psalm-suppress UnresolvableInclude */
         @include_once($this->tmpdir . '/saml20-idp-remote.php');
-        /** @psalm-suppress UndefinedVariable */
+
+        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
         $this->assertTrue(
-            /** @psalm-suppress UndefinedVariable */
+            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
@@ -162,8 +166,12 @@ final class MetaLoaderTest extends TestCase
         } catch (Exception $e) {
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
+
+        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
+        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('expire', $metadata['https://idp.example.com/idp/shibboleth']);
+        // @phpstan-ignore variable.undefined
         $this->assertEquals(1000, $metadata['https://idp.example.com/idp/shibboleth']['expire']);
     }
 
@@ -194,9 +202,11 @@ final class MetaLoaderTest extends TestCase
             $this->fail('Metarefresh does not produce syntactially valid code');
         }
         /* Check we matched the IdP */
+        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
+            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
@@ -263,9 +273,11 @@ final class MetaLoaderTest extends TestCase
         }
 
         /* Check we matched the IdP */
+        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
+            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }

@@ -26,12 +26,16 @@ class ARP
      * Constructor
      *
      * @param array $metadata
-     * @param string $attributemap_filename
+     * @param string|null $attributemap_filename
      * @param string $prefix
      * @param string $suffix
      */
-    public function __construct(array $metadata, string $attributemap_filename, string $prefix, string $suffix)
-    {
+    public function __construct(
+        array $metadata,
+        ?string $attributemap_filename = null,
+        ?string $prefix = '',
+        ?string $suffix = '',
+    ) {
         $this->metadata = $metadata;
         $this->prefix = $prefix;
         $this->suffix = $suffix;
@@ -50,11 +54,10 @@ class ARP
     {
         $config = \SimpleSAML\Configuration::getInstance();
 
-        /** @psalm-suppress PossiblyNullOperand */
         include($config->getPathValue('attributemap', 'attributemap/') . $attributemap_filename . '.php');
 
         // Note that $attributemap is defined in the included attributemap-file!
-        /** @psalm-var array $attributemap */
+        // @phpstan-ignore variable.undefined
         $this->attributes = $attributemap;
     }
 

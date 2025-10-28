@@ -86,7 +86,7 @@ final class MetaRefreshTest extends TestCase
 
     /**
      */
-    public function testMetaRefresh()
+    public function testMetaRefresh(): void
     {
         $_SERVER['REQUEST_URI'] = '/module.php/metarefresh/';
         $_SERVER['REQUEST_METHOD'] = 'GET';
