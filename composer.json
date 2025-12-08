@@ -40,12 +40,12 @@
         "simplesamlphp/assert": "^1.8",
         "simplesamlphp/composer-module-installer": "^1.4",
         "simplesamlphp/simplesamlphp": "~2.4.0",
-        "simplesamlphp/xml-common": "~1.25.0 || ~2.0.0",
-        "symfony/http-foundation": "~6.4.0",
-        "symfony/var-exporter": "~6.4.0"
+        "simplesamlphp/xml-common": "~2.0",
+        "symfony/http-foundation": "~6.4",
+        "symfony/var-exporter": "~6.4"
     },
     "require-dev": {
-        "simplesamlphp/simplesamlphp-test-framework": "~1.10.3"
+        "simplesamlphp/simplesamlphp-test-framework": "~1.10"
     },
     "support": {
         "issues": "https://github.com/simplesamlphp/simplesamlphp-module-metarefresh/issues",
