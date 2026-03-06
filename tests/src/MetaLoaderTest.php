@@ -119,7 +119,6 @@ final class MetaLoaderTest extends TestCase
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
-            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
@@ -149,7 +148,6 @@ final class MetaLoaderTest extends TestCase
         // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
         $this->assertTrue(
-            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
@@ -175,9 +173,7 @@ final class MetaLoaderTest extends TestCase
 
         // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
-        // @phpstan-ignore variable.undefined
         $this->assertArrayHasKey('expire', $metadata['https://idp.example.com/idp/shibboleth']);
-        // @phpstan-ignore variable.undefined
         $this->assertEquals(1000, $metadata['https://idp.example.com/idp/shibboleth']['expire']);
     }
 
@@ -213,7 +209,6 @@ final class MetaLoaderTest extends TestCase
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
-            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
@@ -286,7 +281,6 @@ final class MetaLoaderTest extends TestCase
         $this->assertArrayHasKey('https://idp.example.com/idp/shibboleth', $metadata);
 
         $this->assertTrue(
-            // @phpstan-ignore variable.undefined
             empty(array_diff_key($this->expected, $metadata['https://idp.example.com/idp/shibboleth'])),
         );
     }
