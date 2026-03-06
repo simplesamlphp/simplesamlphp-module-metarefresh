@@ -34,18 +34,18 @@
         }
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-libxml": "*",
 
-        "simplesamlphp/assert": "^1.8",
-        "simplesamlphp/composer-module-installer": "^1.4",
-        "simplesamlphp/simplesamlphp": "~2.4.0",
-        "simplesamlphp/xml-common": "~2.0",
-        "symfony/http-foundation": "~6.4",
-        "symfony/var-exporter": "~6.4"
+        "simplesamlphp/assert": "^2.0",
+        "simplesamlphp/composer-module-installer": "^1.7",
+        "simplesamlphp/simplesamlphp": "~2.5@dev",
+        "simplesamlphp/xml-common": "~2.7",
+        "symfony/http-foundation": "~7.4",
+        "symfony/var-exporter": "~7.4"
     },
     "require-dev": {
-        "simplesamlphp/simplesamlphp-test-framework": "~1.10"
+        "simplesamlphp/simplesamlphp-test-framework": "~1.11"
     },
     "support": {
         "issues": "https://github.com/simplesamlphp/simplesamlphp-module-metarefresh/issues",
