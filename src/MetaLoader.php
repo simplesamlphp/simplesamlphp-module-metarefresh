@@ -623,6 +623,9 @@ class MetaLoader
                 $content .= $this->getTime() . "\nDo not update it manually as it will get overwritten\n" . '*/' . "\n";
 
                 foreach ($elements as $m) {
+                    if (!isset($m['metadata']['entityid']) && isset($m['metadata'][0]['entityid'])) {
+                        $m['metadata']=$m['metadata'][0];
+                    }
                     $entityID = $m['metadata']['entityid'];
                     $content .= "\n" . '$metadata[\'';
                     $content .= addslashes($entityID) . '\'] = ' . VarExporter::export($m['metadata']) . ';' . "\n";
