@@ -402,7 +402,7 @@ class MetaLoader
             }
         }
 
-        return $headers;
+        return ['headers' => $headers];
     }
 
 
