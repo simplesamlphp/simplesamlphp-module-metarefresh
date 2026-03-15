@@ -108,27 +108,26 @@ class MetaLoader
 
             $httpUtils = new Utils\HTTP();
             $data = null;
+
             // GET!
-            try {
-                /** @var array $response  We know this because we set the third parameter to `true` */
-                $response = $httpUtils->fetch($source['src'], $context, true);
-                list($data, $responseHeaders) = $response;
-            } catch (Exception $e) {
-                Logger::warning('metarefresh: ' . $e->getMessage());
-            }
+            $client = $httpUtils->createHttpClient($context);
+            $response = $client->request('GET', $source['src'], $context);
+            $statusCode = $response->getStatusCode();
+            $responseHeaders = $response->getHeaders();
+            $data = $response->getContent();
 
             // We have response headers, so the request succeeded
-            if (!isset($responseHeaders)) {
+            if ($responseHeaders === []) {
                 // No response headers, this means the request failed in some way, so re-use old data
                 Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
-            } elseif (preg_match('@^HTTP/(2\.0|1\.[01])\s304\s@', $responseHeaders[0])) {
+            } elseif ($statusCode === 304) {
                 // 304 response
                 Logger::debug('Received HTTP 304 (Not Modified) - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
-            } elseif (!preg_match('@^HTTP/(2\.0|1\.[01])\s200\s@', $responseHeaders[0])) {
+            } elseif ($statusCode !== 200) {
                 // Other error
                 Logger::info('Error from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
