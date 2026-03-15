@@ -384,23 +384,25 @@ class MetaLoader
         $name = $config->getOptionalString('technicalcontact_name', null);
         $mail = $config->getOptionalString('technicalcontact_email', null);
 
-        $rawheader = "User-Agent: SimpleSAMLphp metarefresh, run by $name <$mail>\r\n";
+        $headers = [
+            'User-Agent' => "SimpleSAMLphp metarefresh, run by $name <$mail>",
+        ];
 
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             if (array_key_exists($source['src'], $this->state)) {
                 $sourceState = $this->state[$source['src']];
 
                 if (isset($sourceState['last-modified'])) {
-                    $rawheader .= 'If-Modified-Since: ' . $sourceState['last-modified'] . "\r\n";
+                    $headers['If-Modified-Since'] = $sourceState['last-modified'];
                 }
 
                 if (isset($sourceState['etag'])) {
-                    $rawheader .= 'If-None-Match: ' . $sourceState['etag'] . "\r\n";
+                    $headers['If-None-Match'] = $sourceState['etag'];
                 }
             }
         }
 
-        return ['http' => ['header' => $rawheader]];
+        return $headers;
     }
 
 
