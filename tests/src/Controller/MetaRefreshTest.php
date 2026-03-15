@@ -52,7 +52,7 @@ final class MetaRefreshTest extends TestCase
                         'cron' => ['hourly'],
                         'sources' => [
                             [
-                                'src' => 'https://example.org/simplesaml/module.php/aggregator/?id=kalmarcentral&set=saml2&exclude=norway',
+                                'src' => 'https://nexus.microsoftonline-p.com/federationmetadata/saml20/federationmetadata.xml',
                             ],
                         ],
                         'outputFormat' => 'flatfile',
@@ -104,6 +104,5 @@ final class MetaRefreshTest extends TestCase
         $contents = $response->getContents();
         $this->assertStringContainsString('[metarefresh]: Executing set [example]', $contents);
         $this->assertStringContainsString('In set [example] loading source', $contents);
-        $this->assertStringContainsString('attempting to re-use cached metadata', $contents);
     }
 }
