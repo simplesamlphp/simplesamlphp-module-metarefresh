@@ -1,0 +1,7 @@
+
+Warning: require_once(/apps/lib/_autoload.php): Failed to open stream: No such file or directory in /apps/development/simplesamlphp-module-metarefresh/bin/metarefresh.php on line 15
+
+Fatal error: Uncaught Error: Failed opening required '/apps/lib/_autoload.php' (include_path='.:/opt/remi/php84/root/usr/share/pear:/opt/remi/php84/root/usr/share/php:/usr/share/pear:/usr/share/php') in /apps/development/simplesamlphp-module-metarefresh/bin/metarefresh.php:15
+Stack trace:
+#0 {main}
+  thrown in /apps/development/simplesamlphp-module-metarefresh/bin/metarefresh.php on line 15
