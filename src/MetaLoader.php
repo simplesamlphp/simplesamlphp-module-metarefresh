@@ -113,8 +113,8 @@ class MetaLoader
             $client = $httpUtils->createHttpClient($context);
             $response = $client->request('GET', $source['src'], $context);
             $statusCode = $response->getStatusCode();
-            $responseHeaders = $response->getHeaders();
-            $data = $response->getContent();
+            $responseHeaders = $response->getHeaders(false);
+            $data = $response->getContent(false);
 
             // We have response headers, so the request succeeded
             if ($responseHeaders === []) {
