@@ -116,8 +116,8 @@ class MetaLoader
             try {
                 $statusCode = $response->getStatusCode();
             } catch (TransportException $e) {
-                Logger::warning($e->getMessage());
-                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
+                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata.'
+                           . ' The error was: ' . $e->getMessage());
                 $this->addCachedMetadata($source);
                 return;
             }
