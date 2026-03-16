@@ -502,6 +502,9 @@ class MetaLoader
             echo '/* The following data should be added to metadata/' . $category . '.php. */' . "\n";
 
             foreach ($elements as $m) {
+                if (!isset($m['metadata']['entityid']) && isset($m['metadata'][0]['entityid'])) {
+                    $m['metadata']=$m['metadata'][0];
+                }
                 $filename = $m['filename'];
                 $entityID = $m['metadata']['entityid'];
                 $time = $this->getTime();
@@ -656,6 +659,9 @@ class MetaLoader
         // First we add all the metadata entries to the metadata handler
         foreach ($this->metadata as $set => $elements) {
             foreach ($elements as $m) {
+                if (!isset($m['metadata']['entityid']) && isset($m['metadata'][0]['entityid'])) {
+                    $m['metadata']=$m['metadata'][0];
+                }
                 $entityId = $m['metadata']['entityid'];
 
                 Logger::debug(sprintf(
@@ -683,6 +689,9 @@ class MetaLoader
 
         foreach ($this->metadata as $set => $elements) {
             foreach ($elements as $m) {
+                if (!isset($m['metadata']['entityid']) && isset($m['metadata'][0]['entityid'])) {
+                    $m['metadata']=$m['metadata'][0];
+                }
                 $entityId = $m['metadata']['entityid'];
 
                 Logger::debug("PDO Metarefresh: Upsert metadata entry `{$entityId}` in set `{$set}`.");
