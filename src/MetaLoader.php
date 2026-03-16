@@ -10,6 +10,7 @@ use SimpleSAML\Logger;
 use SimpleSAML\Metadata;
 use SimpleSAML\Utils;
 use SimpleSAML\XML\DOMDocumentFactory;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\VarExporter\VarExporter;
 
 /**
@@ -112,17 +113,19 @@ class MetaLoader
             // GET!
             $client = $httpUtils->createHttpClient($context);
             $response = $client->request('GET', $source['src'], $context);
-            $statusCode = $response->getStatusCode();
+            try {
+                $statusCode = $response->getStatusCode();
+            } catch (TransportException $e) {
+                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
+                $this->addCachedMetadata($source);
+                return;
+            }
+
             $responseHeaders = $response->getHeaders(false);
             $data = $response->getContent(false);
 
             // We have response headers, so the request succeeded
-            if ($responseHeaders === []) {
-                // No response headers, this means the request failed in some way, so re-use old data
-                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
-                $this->addCachedMetadata($source);
-                return;
-            } elseif ($statusCode === 304) {
+            if ($statusCode === 304) {
                 // 304 response
                 Logger::debug('Received HTTP 304 (Not Modified) - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
@@ -136,7 +139,7 @@ class MetaLoader
         } else {
             // Local file.
             $data = file_get_contents($source['src']);
-            $responseHeaders = null;
+            $responseHeaders = [];
         }
 
         // Everything OK. Proceed.
@@ -428,13 +431,13 @@ class MetaLoader
      * Store caching state data for a source
      *
      * @param array $source
-     * @param array|null $responseHeaders
+     * @param array $responseHeaders
      */
-    private function saveState(array $source, ?array $responseHeaders): void
+    private function saveState(array $source, array $responseHeaders): void
     {
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             // Headers section
-            if ($responseHeaders !== null) {
+            if ($responseHeaders !== []) {
                 $candidates = ['last-modified', 'etag'];
 
                 foreach ($candidates as $candidate) {
