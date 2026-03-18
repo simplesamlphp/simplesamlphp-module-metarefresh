@@ -199,7 +199,7 @@ class MetaLoader
                 if (count($attributeAuthorities) && !empty($attributeAuthorities[0])) {
                     $this->addMetadata(
                         $source['src'],
-                        $attributeAuthorities,
+                        $attributeAuthorities[0],
                         'attributeauthority-remote',
                         $template,
                     );
