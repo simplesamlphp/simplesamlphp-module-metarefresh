@@ -107,10 +107,8 @@ class MetaLoader
             // Build new HTTP context
             $context = $this->createContext($source);
 
-            $httpUtils = new Utils\HTTP();
-            $data = null;
-
             // GET!
+            $httpUtils = new Utils\HTTP();
             $client = $httpUtils->createHttpClient($context);
             $response = $client->request('GET', $source['src'], $context);
             try {
