@@ -10,6 +10,7 @@ use SimpleSAML\Logger;
 use SimpleSAML\Metadata;
 use SimpleSAML\Utils;
 use SimpleSAML\XML\DOMDocumentFactory;
+use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Component\VarExporter\VarExporter;
 
 /**
@@ -108,27 +109,29 @@ class MetaLoader
 
             $httpUtils = new Utils\HTTP();
             $data = null;
-            // GET!
-            try {
-                /** @var array $response  We know this because we set the third parameter to `true` */
-                $response = $httpUtils->fetch($source['src'], $context, true);
-                list($data, $responseHeaders) = $response;
-            } catch (Exception $e) {
-                Logger::warning('metarefresh: ' . $e->getMessage());
-            }
 
-            // We have response headers, so the request succeeded
-            if (!isset($responseHeaders)) {
-                // No response headers, this means the request failed in some way, so re-use old data
-                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata');
+            // GET!
+            $client = $httpUtils->createHttpClient($context);
+            $response = $client->request('GET', $source['src'], $context);
+            try {
+                $statusCode = $response->getStatusCode();
+            } catch (TransportException $e) {
+                Logger::info('No response from ' . $source['src'] . ' - attempting to re-use cached metadata.'
+                           . ' The error was: ' . $e->getMessage());
                 $this->addCachedMetadata($source);
                 return;
-            } elseif (preg_match('@^HTTP/(2\.0|1\.[01])\s304\s@', $responseHeaders[0])) {
+            }
+
+            $responseHeaders = $response->getHeaders(false);
+            $data = $response->getContent(false);
+
+            // We have response headers, so the request succeeded
+            if ($statusCode === 304) {
                 // 304 response
                 Logger::debug('Received HTTP 304 (Not Modified) - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
                 return;
-            } elseif (!preg_match('@^HTTP/(2\.0|1\.[01])\s200\s@', $responseHeaders[0])) {
+            } elseif ($statusCode !== 200) {
                 // Other error
                 Logger::info('Error from ' . $source['src'] . ' - attempting to re-use cached metadata');
                 $this->addCachedMetadata($source);
@@ -137,7 +140,7 @@ class MetaLoader
         } else {
             // Local file.
             $data = file_get_contents($source['src']);
-            $responseHeaders = null;
+            $responseHeaders = [];
         }
 
         // Everything OK. Proceed.
@@ -199,7 +202,7 @@ class MetaLoader
                 if (count($attributeAuthorities) && !empty($attributeAuthorities[0])) {
                     $this->addMetadata(
                         $source['src'],
-                        $attributeAuthorities,
+                        $attributeAuthorities[0],
                         'attributeauthority-remote',
                         $template,
                     );
@@ -384,23 +387,25 @@ class MetaLoader
         $name = $config->getOptionalString('technicalcontact_name', null);
         $mail = $config->getOptionalString('technicalcontact_email', null);
 
-        $rawheader = "User-Agent: SimpleSAMLphp metarefresh, run by $name <$mail>\r\n";
+        $headers = [
+            'User-Agent' => "SimpleSAMLphp metarefresh, run by $name <$mail>",
+        ];
 
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             if (array_key_exists($source['src'], $this->state)) {
                 $sourceState = $this->state[$source['src']];
 
                 if (isset($sourceState['last-modified'])) {
-                    $rawheader .= 'If-Modified-Since: ' . $sourceState['last-modified'] . "\r\n";
+                    $headers['If-Modified-Since'] = $sourceState['last-modified'];
                 }
 
                 if (isset($sourceState['etag'])) {
-                    $rawheader .= 'If-None-Match: ' . $sourceState['etag'] . "\r\n";
+                    $headers['If-None-Match'] = $sourceState['etag'];
                 }
             }
         }
 
-        return ['http' => ['header' => $rawheader]];
+        return ['headers' => $headers];
     }
 
 
@@ -427,13 +432,13 @@ class MetaLoader
      * Store caching state data for a source
      *
      * @param array $source
-     * @param array|null $responseHeaders
+     * @param array $responseHeaders
      */
-    private function saveState(array $source, ?array $responseHeaders): void
+    private function saveState(array $source, array $responseHeaders): void
     {
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             // Headers section
-            if ($responseHeaders !== null) {
+            if ($responseHeaders !== []) {
                 $candidates = ['last-modified', 'etag'];
 
                 foreach ($candidates as $candidate) {
