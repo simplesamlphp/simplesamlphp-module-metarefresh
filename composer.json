@@ -39,7 +39,7 @@
 
         "simplesamlphp/assert": "^2.0",
         "simplesamlphp/composer-module-installer": "^1.7",
-        "simplesamlphp/simplesamlphp": "~2.5@dev",
+        "simplesamlphp/simplesamlphp": "~2.5",
         "simplesamlphp/xml-common": "~2.7",
         "symfony/http-foundation": "~7.4",
         "symfony/http-client": "~7.4",
