@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\metarefresh;
 
+use DateInterval;
 use DateTimeImmutable;
 use Exception;
 use SimpleSAML\Configuration;
@@ -394,8 +395,11 @@ class MetaLoader
                  * so we may need to refresh the metadata even if the source indicates it has not changed.
                  */
                 if (isset($source['expireAfter']) && isset($sourceState['requested_at'])) {
-                    $requestedAt = (new DateTimeImmutable($sourceState['requested_at']))->getTimestamp();
-                    if ($requestedAt + $source['expireAfter'] <= time() - 3600) { // 1 hour based on default cron tags
+                    $requestedAt = new DateTimeImmutable($sourceState['requested_at']);
+                    $expiresAt = $requestedAt->add(new DateInterval('PT' . $source['expireAfter'] . 'S'));
+                    $refreshThreshold = $expiresAt->sub(new DateInterval('PT1H')); // 1 hour based on default cron tags
+                    $now = new DateTimeImmutable();
+                    if ($now >= $refreshThreshold) {
                         Logger::info(sprintf(
                             'Cached metadata for %s expires soon - forcing refresh even if not changed',
                             $source['src'],
