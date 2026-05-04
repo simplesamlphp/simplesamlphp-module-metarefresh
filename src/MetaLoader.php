@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SimpleSAML\Module\metarefresh;
 
+use DateInterval;
+use DateTimeImmutable;
 use Exception;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
@@ -392,6 +394,26 @@ class MetaLoader
         if (isset($source['conditionalGET']) && $source['conditionalGET']) {
             if (array_key_exists($source['src'], $this->state)) {
                 $sourceState = $this->state[$source['src']];
+
+                /*
+                 * If an expireAfter value exists, we effectively altered the metadata's validUntil ourselves
+                 * so we may need to refresh the metadata even if the source indicates it has not changed.
+                 */
+                if (isset($source['expireAfter']) && isset($sourceState['requested_at'])) {
+                    $requestedAt = new DateTimeImmutable($sourceState['requested_at']);
+                    $expiresAt = $requestedAt->add(new DateInterval('PT' . $source['expireAfter'] . 'S'));
+                    $refreshThreshold = $expiresAt->sub(new DateInterval('PT1H')); // 1 hour based on default cron tags
+                    $now = new DateTimeImmutable();
+                    if ($now >= $refreshThreshold) {
+                        Logger::info(sprintf(
+                            'Cached metadata for %s expires soon - forcing refresh even if not changed',
+                            $source['src'],
+                        ));
+                        unset($sourceState['last-modified']);
+                        unset($sourceState['etag']);
+                        $rawheader .= 'Cache-Control: max-age=0' . "\r\n";
+                    }
+                }
 
                 if (isset($sourceState['last-modified'])) {
                     $headers['If-Modified-Since'] = $sourceState['last-modified'];

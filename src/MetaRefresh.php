@@ -113,7 +113,7 @@ class MetaRefresh
                     $source['whitelist'] = $whitelist;
                 }
 
-                # Merge global and src specific attributewhitelists: cannot use array_unique for multi-dim.
+                // Merge global and src specific attributewhitelists: cannot use array_unique for multi-dim.
                 if (isset($source['attributewhitelist'])) {
                     $source['attributewhitelist'] = array_merge($source['attributewhitelist'], $attributewhitelist);
                 } else {
@@ -123,6 +123,11 @@ class MetaRefresh
                 // Let src specific conditionalGET override global one
                 if (!isset($source['conditionalGET'])) {
                     $source['conditionalGET'] = $conditionalGET;
+                }
+
+                // make our cache expiry available to the loader if we're conditionally GETting
+                if ($source['conditionalGET'] && isset($expireAfter)) {
+                    $source['expireAfter'] = $expireAfter;
                 }
 
                 Logger::debug('[metarefresh]: In set [' . $setkey . '] loading source [' . $source['src'] . ']');
